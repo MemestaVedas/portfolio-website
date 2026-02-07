@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Canela';
+  src: url('/fonts/canela-bold.otf') format('opentype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+@theme {
+  /* === Y2K IDENTITY COLORS === */
+  --color-electric-primary: #2F43FF;
+  --color-electric-glow: #A5B4FF;
+  --color-electric-dark: #1E2B99;
+
+  --color-chrome-light: #E8EAFF;
+  --color-chrome-mid: #C7D2FE;
+
+  --color-accent-lime: #C7F000;
+  --color-accent-pink: #F4B4FF;
+  --color-accent-cyan: #00F0FF;
+
+  /* === NEW Y2K ACCENTS === */
+  --color-accent-coral: #FF6B4A;
+  --color-accent-orange: #FF9F1C;
+  --color-accent-magenta: #E040FB;
+  --color-accent-warm-yellow: #FFE66D;
+  --color-console-dark: #0D0D0D;
+  --color-console-frame: #1A1A2E;
+
+  /* === BLUEPRINT SYSTEM === */
+  --color-blueprint-base: #0A0E1A;
+  --color-blueprint-grid: rgba(47, 67, 255, 0.15);
+  --color-blueprint-line: #2F43FF;
+  --color-blueprint-text: #E0E7FF;
+  --color-blueprint-metric: #A5B4FF;
+
+  /* === GLASS SYSTEM === */
+  --glass-bg: rgba(47, 67, 255, 0.12);
+  --glass-border: rgba(165, 180, 255, 0.25);
+  --glass-blur: 24px;
+
+  /* === NEUTRALS === */
+  --color-ink-pure: #000000;
+  --color-white-pure: #FFFFFF;
+  --color-white-soft: rgba(255, 255, 255, 0.85);
+
+  /* Font Families */
+  --font-display: Canela, serif;
+  --font-body: var(--font-body-stack), sans-serif;
+  --font-mono: var(--font-mono-stack), monospace;
+  --font-metric: var(--font-mono-stack), monospace;
+  --font-ui: var(--font-body-stack), sans-serif;
+  --font-druk: 'Druk', 'Impact', 'Arial Black', sans-serif;
+}
+
+/* Utilities that use the theme variables */
+
+@utility glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+@utility bg-chrome-gradient {
+  background-image: linear-gradient(135deg, var(--color-chrome-light) 0%, var(--color-chrome-mid) 50%, var(--color-electric-glow) 100%);
+}
+
+@utility text-chrome-gradient {
+  background-image: linear-gradient(135deg, var(--color-chrome-light) 0%, var(--color-chrome-mid) 50%, var(--color-electric-glow) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility shadow-glow {
+  box-shadow: 0 0 20px rgba(47, 67, 255, 0.4), 0 0 40px rgba(47, 67, 255, 0.2);
+}
+
+@utility shadow-float {
+  box-shadow: 0 2px 8px rgba(47, 67, 255, 0.08), 0 8px 24px rgba(47, 67, 255, 0.12), 0 16px 48px rgba(47, 67, 255, 0.16);
+}
+
+@keyframes space-drift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-2%, -1.5%, 0) scale(1.02);
+  }
+}
+
+@keyframes space-drift-reverse {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2%, 1.5%, 0) scale(1.03);
+  }
+}
+
+@keyframes space-twinkle {
+  0%, 100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes screen-twinkle {
+  0%, 78%, 100% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  84% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+  90% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+}
+
+@utility screen-twinkle {
+  animation: screen-twinkle 9s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.45), 0 0 16px rgba(165, 180, 255, 0.35);
+}
+
+@utility space-nebula {
+  background-image:
+    radial-gradient(1200px 800px at 10% 20%, rgba(47, 67, 255, 0.18) 0%, transparent 60%),
+    radial-gradient(900px 700px at 85% 15%, rgba(0, 240, 255, 0.12) 0%, transparent 55%),
+    radial-gradient(800px 700px at 70% 80%, rgba(244, 180, 255, 0.1) 0%, transparent 60%),
+    radial-gradient(700px 600px at 20% 85%, rgba(255, 107, 74, 0.08) 0%, transparent 60%);
+  background-repeat: no-repeat;
+  filter: saturate(0.9);
+  opacity: 0.7;
+  animation: space-drift 120s ease-in-out infinite;
+}
+
+@utility space-stars {
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 60%),
+    radial-gradient(1px 1px at 80% 20%, rgba(255, 255, 255, 0.35) 0%, transparent 60%),
+    radial-gradient(1.5px 1.5px at 40% 80%, rgba(255, 255, 255, 0.3) 0%, transparent 60%),
+    radial-gradient(1px 1px at 60% 50%, rgba(255, 255, 255, 0.25) 0%, transparent 60%),
+    radial-gradient(2px 2px at 10% 70%, rgba(165, 180, 255, 0.35) 0%, transparent 60%);
+  background-size: 260px 260px, 320px 320px, 380px 380px, 300px 300px, 420px 420px;
+  background-repeat: repeat;
+  opacity: 0.35;
+  animation: space-drift-reverse 180s ease-in-out infinite, space-twinkle 10s ease-in-out infinite;
+}
+
+@utility space-dust {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 3px 3px;
+  opacity: 0.08;
+  mix-blend-mode: screen;
+  animation: space-drift 220s ease-in-out infinite;
+}
+
+@media (max-width: 768px),
+(prefers-reduced-motion: reduce) {
+  :root {
+    --glass-blur: 0px;
+    --glass-bg: rgba(10, 14, 26, 0.95);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .space-nebula,
+  .space-stars,
+  .space-dust {
+    animation: none;
+  }
+}
+
+@utility animate-spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Hide scrollbar globally */
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
