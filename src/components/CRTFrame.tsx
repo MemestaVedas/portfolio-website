@@ -6,6 +6,8 @@ interface CRTFrameProps {
     className?: string;
     screenOpacity?: number | MotionValue<number>;
     scale?: number | MotionValue<number>;
+    borderRadius?: number | MotionValue<number>;
+    frameOpacity?: number | MotionValue<number>;
 }
 
 /**
@@ -16,7 +18,9 @@ export const CRTFrame: React.FC<CRTFrameProps> = ({
     children,
     className = "",
     screenOpacity = 1,
-    scale = 1
+    scale = 1,
+    borderRadius = 64,
+    frameOpacity = 1
 }) => {
     // Dynamic background with motion template for performance
     const background = useMotionTemplate`linear-gradient(135deg, rgba(10,10,10,${screenOpacity}) 0%, rgba(0,0,0,${screenOpacity}) 50%, rgba(10,10,10,${screenOpacity}) 100%)`;
@@ -29,14 +33,17 @@ export const CRTFrame: React.FC<CRTFrameProps> = ({
             transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
             style={{
                 perspective: '1500px',
-                scale: scale
+                scale: scale,
+                willChange: 'transform'
             }}
         >
             {/* CRT TV Outer Shell */}
-            <div
-                className="relative p-4 md:p-6 rounded-[2.5rem] md:rounded-[4rem]"
+            <motion.div
+                className="relative p-4 md:p-6"
                 style={{
+                    borderRadius: typeof borderRadius === 'number' ? `${borderRadius}px` : borderRadius,
                     background: 'linear-gradient(145deg, #2a2a45 0%, #1a1a2e 50%, #0d0d1a 100%)',
+                    opacity: frameOpacity,
                     boxShadow: `
                         0 40px 80px rgba(0,0,0,0.5),
                         0 20px 40px rgba(0,0,0,0.4),
@@ -130,7 +137,7 @@ export const CRTFrame: React.FC<CRTFrameProps> = ({
                     </span>
                     <div className="h-px w-12 bg-gradient-to-l from-transparent to-white/20" />
                 </motion.div>
-            </div>
+            </motion.div>
         </motion.div >
     );
 };

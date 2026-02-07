@@ -1,32 +1,33 @@
 "use client";
 
 import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import CRTFrame from './CRTFrame';
 import SpaceBackdrop from './SpaceBackdrop';
 
 interface FixedTVParallaxProps {
     heroContent: React.ReactNode;
     quoteContent: React.ReactNode;
+    morphIntroContent: React.ReactNode;
     aboutContent: React.ReactNode;
     decorativeElements?: React.ReactNode;
 }
 
 /**
- * Fixed TV Parallax Container
- * The TV frame stays fixed while content scrolls through it
- * Background layers move at different speeds for depth
+ * Fixed TV Parallax Container with Organic Morph Transition
+ * The TV frame stays fixed while content scrolls through it,
+ * then morphs organically into the full viewport
  */
 export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
     heroContent,
     quoteContent,
+    morphIntroContent,
     aboutContent,
     decorativeElements
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     // Track scroll progress through this container
-    // We increase the height to 400vh to accommodate the multi-stage animation
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"]
@@ -45,24 +46,64 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
     const nameTextScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
 
     // TV Frame - Move UP to center
-    // Starts low (hidden or partially visible), moves to center
     const tvTranslateY = useTransform(scrollYProgress, [0, 0.2], ['50vh', '0vh']);
 
-    // --- PHASE 2: CONTENT SCROLL (0.25 - 0.75) ---
+    // --- PHASE 2: CONTENT SCROLL (0.25 - 0.90) ---
     // Content slides inside the TV while TV is pinned
+    // Flow: Quote → Mission Control → Morph Intro Text → [MORPH]
+    // Adjusted to give MUCH MORE TIME for control panel and text to shine
 
     const contentY = useTransform(
         scrollYProgress,
-        [0.2, 0.35, 0.45, 0.55, 0.65, 0.85],
-        ['35%', '0%', '0%', '-35%', '-35%', '-70%']
+        //  Quote In | Quote Ctr | Hero In | Hero HOLD | Text In | Text Out
+        [0.2, 0.35, 0.45, 0.70, 0.80, 0.90],
+        ['70%', '35%', '0%', '0%', '-35%', '-70%']
     );
 
-    // --- PHASE 3: EXPANSION / EXIT (0.75 - 1.0) ---
-    // TV expands to infinity to reveal the next section
+    // --- PHASE 3: ORGANIC MORPH / EXPANSION (0.90 - 1.0) ---
+    // TV morphs organically to fill viewport with elastic easing
+    // Starts later now to allow content to shine
 
-    const tvScale = useTransform(scrollYProgress, [0.9, 0.98], [1, 30]);
-    const screenOpacity = useTransform(scrollYProgress, [0.9, 0.95], [1, 0]);
-    const internalContentOpacity = useTransform(scrollYProgress, [0.85, 0.9], [1, 0]);
+    // Organic cubic-bezier easing curve for fluid, elastic feel
+    const organicEase = [0.22, 1, 0.36, 1] as const;
+
+    // Calculate target scale dynamically (viewport / TV frame)
+    // SLOWER: Extended range from 0.90 to 1.0
+    const tvScaleRaw = useTransform(scrollYProgress, [0.90, 1.0], [1, 25]);
+
+    // Apply spring physics to the scale for organic bouncy feel
+    const tvScale = useSpring(tvScaleRaw, {
+        stiffness: 60,
+        damping: 25,
+        mass: 1.2
+    });
+
+    // Border radius morphs from rounded to sharp - SLOWER match
+    const tvBorderRadius = useTransform(
+        scrollYProgress,
+        [0.90, 0.95, 1.0],
+        [64, 32, 0] // 4rem -> 2rem -> 0
+    );
+
+    // Frame opacity - becomes transparent to reveal content behind
+    const frameOpacity = useTransform(scrollYProgress, [0.92, 0.98], [1, 0]);
+
+    // Screen content opacity - fades out the CRT content
+    const screenOpacity = useTransform(scrollYProgress, [0.92, 0.98], [1, 0]);
+
+    // Internal content - "scrolling reel" effect
+    // Content inside TV slides UP and OUT as if scrolling off screen
+    // Starts at 0.90 now
+    const internalContentY = useTransform(
+        scrollYProgress,
+        [0.90, 1.0],
+        ['0%', '-100%'] // Slides up and completely out
+    );
+    const internalContentOpacity = useTransform(scrollYProgress, [0.90, 0.96], [1, 0]);
+    const internalContentBlur = useTransform(scrollYProgress, [0.90, 0.96], [0, 12]); // More blur
+
+    // Background Opacity - Fades out to reveal content behind
+    const bgOpacity = useTransform(scrollYProgress, [0.90, 0.98], [1, 0]);
 
     // Background layers - Full scroll exit
     const backgroundY = useTransform(scrollYProgress, [0.05, 0.4], ['0vh', '-100vh']);
@@ -73,11 +114,17 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
     return (
         <div
             ref={containerRef}
-            className="relative bg-blueprint-base"
-            style={{ height: '700vh' }}
+            className="relative"
+            style={{ height: '550vh' }}
         >
             {/* Sticky Container - Center of Viewport */}
             <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+
+                {/* Layer -1: Background Color that fades out */}
+                <motion.div
+                    className="absolute inset-0 bg-blueprint-base z-0"
+                    style={{ opacity: bgOpacity }}
+                />
 
                 {/* Layer 0: Background Elements */}
                 <motion.div
@@ -87,7 +134,7 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
                     <div className="absolute inset-0 bg-electric-primary" />
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-chrome-gradient opacity-20 blur-3xl rounded-full" />
                     <SpaceBackdrop className="opacity-[0.1]" />
-                </motion.div>
+                </motion.div >
 
                 <motion.div
                     className="absolute inset-0 z-10 pointer-events-none"
@@ -126,7 +173,7 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
                     </h1>
                 </motion.div>
 
-                {/* Layer 3: TV FRAME - The Window */}
+                {/* Layer 3: TV FRAME - The Window with Organic Morph */}
                 <motion.div
                     className="relative z-20 w-full flex justify-center"
                     style={{ y: tvTranslateY, willChange: "transform" }}
@@ -134,34 +181,47 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
                     <CRTFrame
                         scale={tvScale as any}
                         screenOpacity={screenOpacity as any}
+                        borderRadius={tvBorderRadius as any}
+                        frameOpacity={frameOpacity as any}
                     >
-                        {/* Internal Content Wrapper */}
+                        {/* Internal Content Wrapper - Scrolling Reel Effect */}
                         <motion.div
                             className="w-full flex flex-col"
                             style={{
                                 y: contentY,
-                                opacity: internalContentOpacity
+                                opacity: internalContentOpacity,
+                                // Add the scrolling reel effect during morph
+                                translateY: internalContentY,
+                                filter: useTransform(internalContentBlur, (blur) => `blur(${blur}px)`),
+                                willChange: 'transform, opacity, filter'
                             }}
                         >
                             {/* Quote Section */}
-                            <div className="h-[500px] md:h-[650px] flex items-center justify-center p-6 flex-shrink-0">
+                            <div className="h-[500px] md:h-[650px] w-full flex items-stretch justify-center flex-shrink-0">
                                 {quoteContent}
                             </div>
 
-                            {/* Hero content */}
-                            <div className="h-[500px] md:h-[650px] flex items-center justify-center p-6 flex-shrink-0">
+                            {/* Hero content - Mission Control */}
+                            <div className="h-[500px] md:h-[650px] w-full flex items-stretch justify-center flex-shrink-0">
                                 {heroContent}
                             </div>
 
-                            {/* About content */}
-                            <div className="h-[500px] md:h-[650px] flex items-center justify-center p-6 flex-shrink-0">
-                                {aboutContent}
+                            {/* Morph Intro Text */}
+                            <div className="h-[500px] md:h-[650px] w-full flex items-stretch justify-center flex-shrink-0">
+                                {morphIntroContent}
                             </div>
+
+                            {/* About content (optional) */}
+                            {aboutContent && (
+                                <div className="h-[500px] md:h-[650px] w-full flex items-stretch justify-center flex-shrink-0">
+                                    {aboutContent}
+                                </div>
+                            )}
                         </motion.div>
                     </CRTFrame>
                 </motion.div>
 
-            </div>
+            </div >
 
             {/* Scroll indicator */}
             <motion.div

@@ -59,7 +59,7 @@ export const ParallaxSection: React.FC<ParallaxSectionProps> = ({
             })}
 
             {/* Main Content */}
-            <div className="relative z-10">
+            <div className="relative z-10 h-full w-full">
                 {children}
             </div>
         </section>

@@ -55,7 +55,7 @@ const SkillsSection = () => {
     return (
         <section
             ref={sectionRef}
-            className="relative py-32 overflow-hidden bg-[#050508]"
+            className="relative h-full flex flex-col justify-center overflow-hidden bg-[#050508] pb-32"
             id="architecture"
         >
             {/* Parallax space stars - NOW STATIC (No Parallax) */}
@@ -83,18 +83,18 @@ const SkillsSection = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                    className="mb-16"
+                    className="mb-20 text-center"
                 >
-                    <h2 className="font-display text-5xl md:text-6xl text-white-pure mb-4">
+                    <h2 className="font-display text-6xl md:text-8xl text-white-pure mb-6">
                         Tech Galaxy
                     </h2>
-                    <p className="text-white-soft/60 max-w-xl font-body text-lg">
+                    <p className="text-white-soft/60 max-w-2xl mx-auto font-body text-xl md:text-2xl">
                         Engineering instincts shaped by the tools I've internalized.
                     </p>
                 </motion.div>
 
                 {/* Skill Categories as Orbital Clusters */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 h-full max-h-[60vh]">
                     {Object.entries(skillCategories).map(([key, category], categoryIndex) => (
                         <motion.div
                             key={key}
@@ -102,28 +102,28 @@ const SkillsSection = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: categoryIndex * 0.15, duration: 0.6 }}
-                            className="group"
+                            className="group h-full"
                         >
                             {/* Category Card */}
                             <div
-                                className="relative p-6 rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-sm hover:border-white/10 transition-all duration-500"
+                                className="relative p-8 h-full flex flex-col rounded-3xl border border-white/5 bg-white/[0.02] backdrop-blur-sm hover:border-white/10 transition-all duration-500"
                                 style={{
                                     boxShadow: `inset 0 1px 0 0 rgba(255,255,255,0.05), 0 0 40px -20px ${category.color}20`
                                 }}
                             >
                                 {/* Category Label */}
-                                <div className="flex items-center gap-3 mb-6">
+                                <div className="flex items-center gap-4 mb-8">
                                     <div
-                                        className="w-2 h-2 rounded-full"
-                                        style={{ backgroundColor: category.color, boxShadow: `0 0 10px ${category.color}` }}
+                                        className="w-3 h-3 rounded-full"
+                                        style={{ backgroundColor: category.color, boxShadow: `0 0 15px ${category.color}` }}
                                     />
-                                    <h3 className="text-sm uppercase tracking-wider font-mono" style={{ color: category.color }}>
+                                    <h3 className="text-lg uppercase tracking-wider font-mono font-bold" style={{ color: category.color }}>
                                         {category.label}
                                     </h3>
                                 </div>
 
                                 {/* Skills List */}
-                                <div className="space-y-4">
+                                <div className="space-y-6 flex-grow">
                                     {category.skills.map((skill, skillIndex) => (
                                         <motion.div
                                             key={skill.name}
@@ -133,15 +133,15 @@ const SkillsSection = () => {
                                             transition={{ delay: categoryIndex * 0.1 + skillIndex * 0.05, duration: 0.4 }}
                                             className="group/skill"
                                         >
-                                            <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-4 mb-2">
                                                 <skill.icon
-                                                    className="w-4 h-4 transition-colors duration-300"
+                                                    className="w-6 h-6 transition-colors duration-300"
                                                     style={{ color: category.color }}
                                                 />
-                                                <span className="text-white-pure font-mono">{skill.name}</span>
+                                                <span className="text-white-pure font-mono text-lg font-semibold">{skill.name}</span>
                                             </div>
                                             {/* Reasoning (revealed on hover) */}
-                                            <p className="text-xs text-white-soft/50 mt-1 pl-7 line-clamp-2 group-hover/skill:text-white-soft/70 transition-colors">
+                                            <p className="text-sm text-white-soft/60 pl-10 line-clamp-2 group-hover/skill:text-white-soft/80 transition-colors">
                                                 {skill.reasoning}
                                             </p>
                                         </motion.div>

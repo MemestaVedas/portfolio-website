@@ -4,6 +4,7 @@ import "./globals.css";
 import ShootingStarCursor from "@/components/ShootingStarCursor";
 import { PageTransitionProvider } from "@/context/PageTransitionContext";
 import PageTransition from "@/components/PageTransition";
+import SmoothScroll from "@/components/SmoothScroll";
 
 const inter = Inter({
   variable: "--font-body-stack",
@@ -41,9 +42,11 @@ export default function RootLayout({
         className={`${inter.variable} ${jetbrainsMono.variable} ${anton.variable} antialiased bg-electric-primary text-white-pure selection:bg-accent-lime selection:text-ink-pure`}
       >
         <PageTransitionProvider>
-          <ShootingStarCursor />
-          <PageTransition />
-          {children}
+          <SmoothScroll>
+            <ShootingStarCursor />
+            <PageTransition />
+            {children}
+          </SmoothScroll>
         </PageTransitionProvider>
       </body>
     </html>

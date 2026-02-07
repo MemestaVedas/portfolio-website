@@ -1,20 +1,18 @@
 "use client";
 
 import Hero from "@/components/Hero";
-import ProjectDeepDive from "@/components/ProjectDeepDive";
 import SkillsSection from "@/components/SkillsSection";
-import MetaSection from "@/components/MetaSection";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import OnboardingScreen from "@/components/OnboardingScreen";
-import { SectionDivider } from "@/components/SectionDivider";
-import AboutSection from "@/components/AboutSection";
+
 import EasterEggOverlay from "@/components/EasterEggOverlay";
 import { useKonamiCode } from "@/hooks/useKonamiCode";
 import { projects } from "@/data/projects";
 import { ParallaxSection, ScrollReveal } from "@/components/ParallaxSection";
 import { ProjectPreview } from "@/components/ProjectPreview";
 import { motion } from "framer-motion";
+import SpaceBackdrop from "@/components/SpaceBackdrop";
 
 export default function Home() {
   const konamiActive = useKonamiCode();
@@ -24,36 +22,34 @@ export default function Home() {
       <OnboardingScreen />
       <EasterEggOverlay isActive={konamiActive} />
 
-      <main className="bg-blueprint-base min-h-screen scroll-snap-proximity">
+      <main className="bg-blueprint-base min-h-screen snap-y snap-mandatory text-blueprint-text">
         <Navigation />
 
         {/* Hero Section with Parallax (includes About inside TV) */}
-        <div className="scroll-snap-section">
+        <div className="relative z-10">
           <Hero />
         </div>
 
-        <SectionDivider variant="laser" />
+
 
         {/* Individual Project Previews */}
-        <div id="projects">
+        <div id="projects" className="relative z-0 -mt-[100vh]">
           {projects.map((project, index) => (
-            <div key={project.id}>
+            <div key={project.id} className="h-screen w-full flex flex-col justify-center scroll-snap-section overflow-hidden relative">
               <ScrollReveal direction="up" delay={0.1}>
                 <ProjectPreview project={project} />
               </ScrollReveal>
-              {index < projects.length - 1 && (
-                <SectionDivider variant="constellation" />
-              )}
+
             </div>
           ))}
         </div>
 
-        <SectionDivider variant="chrome" />
+
 
         {/* Skills Section with Staggered Reveal */}
-        <div className="scroll-snap-section">
+        <div className="scroll-snap-section h-screen w-full overflow-hidden">
           <ParallaxSection
-            id="architecture"
+            className="h-full w-full"
             bgLayers={[
               {
                 speed: 0.15,
@@ -68,21 +64,20 @@ export default function Home() {
           </ParallaxSection>
         </div>
 
-        <SectionDivider variant="grid" />
 
-        {/* Meta Section */}
-        <div className="scroll-snap-section">
-          <ScrollReveal direction="up" delay={0.05}>
-            <MetaSection />
-          </ScrollReveal>
+
+        {/* Footer with Space Gap */}
+        <div className="relative w-full">
+          {/* Background for the gap */}
+          <div className="absolute inset-0 bg-[#050508] -z-20" />
+          <SpaceBackdrop className="opacity-80" />
+
+          {/* Spacer to create the gap (which reveals the background) */}
+          <div className="h-32 w-full" />
+
+          <Footer />
         </div>
-
-        <SectionDivider variant="chrome" />
-
-        {/* Footer */}
-        <Footer />
       </main>
     </>
   );
 }
-

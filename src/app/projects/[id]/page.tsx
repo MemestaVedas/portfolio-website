@@ -3,7 +3,7 @@ import ProjectDeepDive from "@/components/ProjectDeepDive";
 import { notFound } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { SectionDivider } from "@/components/SectionDivider";
+
 
 export function generateStaticParams() {
     return projects.map((project) => ({
@@ -31,7 +31,7 @@ export default async function ProjectPage({
                 <ProjectDeepDive project={project} />
             </div>
 
-            <SectionDivider variant="chrome" />
+
             <Footer />
         </main>
     );

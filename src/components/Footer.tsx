@@ -20,7 +20,7 @@ const OrbitalRingsStatic = () => (
 );
 
 const Footer = () => (
-    <footer className="relative bg-electric-primary pt-60 pb-24 overflow-hidden" id="contact">
+    <footer className="relative bg-electric-primary pt-24 pb-24 overflow-hidden" id="contact">
         {/* Y2K Background Elements */}
         <div className="absolute inset-0 pointer-events-none">
             {/* Orbital rings (static) */}
