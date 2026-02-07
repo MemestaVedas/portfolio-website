@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CursorTrail } from './hero/CursorTrail';
 
 // Floating icon card (like the reference image)
 const FloatingIconCard = ({
@@ -242,9 +241,6 @@ export const HeroDecorativeElements = () => {
                     />
                 </div>
             </motion.div>
-
-            {/* Cursor trail effect */}
-            <CursorTrail />
         </>
     );
 };

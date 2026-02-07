@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Github } from 'lucide-react';
+import { GalleryCarousel } from './GalleryCarousel';
 
 const MetaSection = () => {
     return (
@@ -38,49 +39,17 @@ const MetaSection = () => {
                         </div>
                     </div>
 
-                    {/* RIGHT COLUMN: The Receipts */}
-                    <div className="md:w-2/3 space-y-8">
-                        {/* Lighthouse Score */}
-                        <div className="flex gap-6 items-center p-6 border border-white/10 rounded-xl bg-white/5">
-                            <div className="w-16 h-16 rounded-full border-4 border-accent-lime flex items-center justify-center text-accent-lime font-bold text-xl">
-                                100
-                            </div>
-                            <div>
-                                <h3 className="text-white-pure font-bold text-lg mb-1">Lighthouse Performance</h3>
-                                <p className="text-white-soft/60 text-sm">
-                                    0.8s LCP • 0ms Blocking • 0.001 CLS
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Bundle Analysis */}
-                        <div className="p-6 border border-white/10 rounded-xl bg-white/5">
-                            <h3 className="text-white-pure font-bold text-lg mb-4">Bundle Analysis</h3>
-                            <div className="space-y-4">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-white-soft">First Load JS</span>
-                                    <span className="font-mono text-accent-cyan">78.2 KB (gzip)</span>
-                                </div>
-                                <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                                    <div className="h-full bg-accent-cyan w-[20%]" />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Flamegraph */}
-                        <div className="relative border border-white/10 rounded-xl overflow-hidden h-48 group">
-                            <Image
-                                src="/meta/flamegraph.png"
-                                alt="React profiler flamegraph"
-                                fill
-                                className="object-cover opacity-60 group-hover:opacity-100 transition-opacity"
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                <span className="px-3 py-1 bg-black/80 rounded text-xs font-mono text-white-soft">
-                                    Hover to inspect frame
-                                </span>
-                            </div>
-                        </div>
+                    {/* RIGHT COLUMN: Project Gallery */}
+                    <div className="md:w-2/3">
+                        <GalleryCarousel
+                            images={[
+                                "/projects/play-on-ss.png",
+                                "/VIBE-ON!_SS.png",
+                                "/meta/flamegraph.png"
+                            ]}
+                            aspectRatio="video"
+                            className="h-full min-h-[400px]"
+                        />
                     </div>
                 </div>
             </div>

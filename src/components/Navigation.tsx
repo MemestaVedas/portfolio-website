@@ -6,7 +6,10 @@ import { Github, FileText } from 'lucide-react';
 import { Y2KIcons } from './Y2KIcons';
 import ConstellationNav from './ConstellationNav';
 
+import { usePageTransition } from '@/context/PageTransitionContext';
+
 const Navigation = () => {
+    const { transitionTo } = usePageTransition();
     const [activeSection, setActiveSection] = useState('home');
     const [isScrolled, setIsScrolled] = useState(false);
     const [isLowPower, setIsLowPower] = useState(false);
@@ -49,7 +52,9 @@ const Navigation = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1, duration: 0.5 }}
             >
-                <div className={`
+                <div
+                    onClick={() => transitionTo('/')}
+                    className={`
                     w-14 h-14 rounded-xl flex items-center justify-center
                     shadow-glow hover:scale-105 transition-transform cursor-pointer
                     relative overflow-hidden

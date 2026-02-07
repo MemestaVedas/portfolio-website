@@ -4,10 +4,10 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
     Cpu, Code2, FileCode2, Database, Terminal,
-    AudioWaveform, Component, Globe, Palette,
+    Globe, Palette,
     Server, Layers, Zap, GitBranch
 } from 'lucide-react';
-import SpaceBackdrop from './SpaceBackdrop';
+
 
 // Skill data organized into orbital categories
 const skillCategories = {
@@ -15,38 +15,32 @@ const skillCategories = {
         label: 'Core Stack',
         color: '#C7F000', // accent-lime
         skills: [
-            { name: 'Rust', years: 2, icon: Cpu, reasoning: 'Memory safety eliminates entire classes of production bugs.' },
-            { name: 'C++', years: 3, icon: Code2, reasoning: 'Low-level control for DSP kernels and embedded systems.' },
-            { name: 'TypeScript', years: 4, icon: FileCode2, reasoning: 'Type safety at the UI layer prevents runtime errors.' },
-            { name: 'PostgreSQL', years: 2, icon: Database, reasoning: 'Relational modeling with window functions and CTEs.' },
+            { name: 'Rust', icon: Cpu, reasoning: 'Memory safety eliminates entire classes of production bugs.' },
+            { name: 'C++', icon: Code2, reasoning: 'Low-level control for DSP kernels and embedded systems.' },
+            { name: 'TypeScript', icon: FileCode2, reasoning: 'Type safety at the UI layer prevents runtime errors.' },
+            { name: 'PostgreSQL', icon: Database, reasoning: 'Relational modeling with window functions and CTEs.' },
         ]
     },
     frontend: {
         label: 'Frontend',
         color: '#FF6B9D', // accent-pink
         skills: [
-            { name: 'React', years: 4, icon: Layers, reasoning: 'Component architecture with hooks and context.' },
-            { name: 'Next.js', years: 3, icon: Globe, reasoning: 'SSR, ISR, and App Router for production sites.' },
-            { name: 'Tailwind', years: 3, icon: Palette, reasoning: 'Utility-first CSS with design tokens.' },
-            { name: 'Framer Motion', years: 2, icon: Zap, reasoning: 'Physics-based animations and gestures.' },
+            { name: 'React', icon: Layers, reasoning: 'Component architecture with hooks and context.' },
+            { name: 'Next.js', icon: Globe, reasoning: 'SSR, ISR, and App Router for production sites.' },
+            { name: 'Tailwind', icon: Palette, reasoning: 'Utility-first CSS with design tokens.' },
+            { name: 'Framer Motion', icon: Zap, reasoning: 'Physics-based animations and gestures.' },
         ]
     },
     tools: {
         label: 'Tools & Infrastructure',
         color: '#00D9FF', // accent-cyan
         skills: [
-            { name: 'Git', years: 5, icon: GitBranch, reasoning: 'Trunk-based development, rebasing, bisect.' },
-            { name: 'Linux', years: 4, icon: Terminal, reasoning: 'Arch + Hyprland daily driver. Shell scripting.' },
-            { name: 'Docker', years: 2, icon: Server, reasoning: 'Containerized dev environments and CI/CD.' },
+            { name: 'Git', icon: GitBranch, reasoning: 'Trunk-based development, rebasing, bisect.' },
+            { name: 'Linux', icon: Terminal, reasoning: 'Arch + Hyprland daily driver. Shell scripting.' },
+            { name: 'Docker', icon: Server, reasoning: 'Containerized dev environments and CI/CD.' },
         ]
     }
 };
-
-const craftSignals = [
-    { activity: 'Arch Linux / Hyprland', icon: Terminal, reasoning: 'Daily workflow optimization trains production instincts.' },
-    { activity: 'IEM Tuning & Audio', icon: AudioWaveform, reasoning: '1ms delay is audible; 16ms frame drop is visible.' },
-    { activity: 'Design Systems', icon: Component, reasoning: 'Component APIs are contracts. Tokens prevent drift.' },
-];
 
 const SkillsSection = () => {
     const sectionRef = useRef<HTMLElement>(null);
@@ -56,25 +50,21 @@ const SkillsSection = () => {
     });
 
     // Parallax transforms for background elements
-    const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
     const orbitRotate = useTransform(scrollYProgress, [0, 1], [0, 45]);
 
     return (
         <section
             ref={sectionRef}
-            className="relative py-32 overflow-hidden"
+            className="relative py-32 overflow-hidden bg-[#050508]"
             id="architecture"
-            style={{
-                background: 'linear-gradient(180deg, #0a0a0f 0%, #0d0d14 50%, #0a0a0f 100%)'
-            }}
         >
-            {/* Parallax space backdrop */}
-            <motion.div
-                className="absolute inset-0 pointer-events-none"
-                style={{ y: bgY }}
-            >
-                <SpaceBackdrop className="opacity-60" />
-            </motion.div>
+            {/* Parallax space stars - NOW STATIC (No Parallax) */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute inset-0 stars-base opacity-80" />
+                <div className="absolute inset-0 stars-layer-1" />
+                <div className="absolute inset-0 stars-layer-2" />
+                <div className="absolute inset-0 stars-layer-3" />
+            </div>
 
             {/* Decorative orbital ring (parallax) */}
             <motion.div
@@ -149,9 +139,6 @@ const SkillsSection = () => {
                                                     style={{ color: category.color }}
                                                 />
                                                 <span className="text-white-pure font-mono">{skill.name}</span>
-                                                <span className="text-xs text-white-soft/30 ml-auto font-mono">
-                                                    {skill.years}y
-                                                </span>
                                             </div>
                                             {/* Reasoning (revealed on hover) */}
                                             <p className="text-xs text-white-soft/50 mt-1 pl-7 line-clamp-2 group-hover/skill:text-white-soft/70 transition-colors">
@@ -165,40 +152,7 @@ const SkillsSection = () => {
                     ))}
                 </div>
 
-                {/* Engineering Instincts Row */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4, duration: 0.6 }}
-                >
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-electric-primary/30" />
-                        <h3 className="text-sm uppercase tracking-wider text-electric-primary font-mono">
-                            Instincts From
-                        </h3>
-                        <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-electric-primary/30" />
-                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {craftSignals.map((signal, i) => (
-                            <motion.div
-                                key={signal.activity}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.5 + i * 0.1, duration: 0.5 }}
-                                className="flex items-start gap-4 p-4 rounded-xl border border-electric-primary/20 bg-electric-primary/5 hover:bg-electric-primary/10 transition-colors"
-                            >
-                                <signal.icon className="w-5 h-5 text-electric-primary shrink-0 mt-0.5" />
-                                <div>
-                                    <h4 className="text-white-pure font-mono text-sm mb-1">{signal.activity}</h4>
-                                    <p className="text-xs text-white-soft/60 leading-relaxed">{signal.reasoning}</p>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </motion.div>
             </div>
         </section>
     );

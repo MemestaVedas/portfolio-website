@@ -25,6 +25,11 @@ export interface Tradeoff {
     explanation: string;
 }
 
+export interface CategorizedTech {
+    category: string;
+    items: string[];
+}
+
 export interface ProjectData {
     id: string;
     name: string;
@@ -40,6 +45,7 @@ export interface ProjectData {
     memoryManagement?: string[]; // Added for Bento
     mockups: string[];
     tech: string[];
+    categorizedStack?: CategorizedTech[];
     techTooltips?: Record<string, string>;
     github: string;
     demo: string;
@@ -86,7 +92,12 @@ const TechTag = ({ name, tooltip }: { name: string; tooltip?: string }) => {
     );
 };
 
+import { usePageTransition } from '@/context/PageTransitionContext';
+import { ChevronLeft } from 'lucide-react';
+
 const ProjectDeepDive = ({ project }: { project: ProjectData }) => {
+    const { transitionTo } = usePageTransition();
+
     return (
         <section className="relative py-32 bg-blueprint-base overflow-hidden" id={project.id}>
             {/* Y2K Background Elements */}
@@ -99,6 +110,22 @@ const ProjectDeepDive = ({ project }: { project: ProjectData }) => {
             </div>
 
             <div className="container mx-auto px-8 relative z-10 max-w-6xl">
+                {/* BACK BUTTON */}
+                <motion.button
+                    onClick={() => transitionTo('/')}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="
+                        group flex items-center gap-2 mb-12 
+                        text-white-soft/60 hover:text-accent-cyan
+                        transition-colors font-mono text-sm uppercase tracking-widest
+                    "
+                >
+                    <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                    <span>Back to Coordinates</span>
+                </motion.button>
+
                 {/* PROJECT HEADER (Y2K styled) */}
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}

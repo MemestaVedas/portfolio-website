@@ -35,41 +35,10 @@ export const HeroContent = () => {
             {/* MAIN BENTO DASHBOARD */}
             <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-4">
 
-                {/* 1. IDENTITY MODULE (Span 7) */}
+                {/* 1. CORE MODULES / STACK (Span 6) */}
                 <motion.div
-                    className="col-span-1 md:col-span-12 lg:col-span-7 flex flex-col justify-center p-6 rounded-2xl border border-electric-primary/30 bg-electric-primary/10 backdrop-blur-sm relative overflow-hidden group hover:border-electric-primary/60 transition-colors"
+                    className="col-span-1 md:col-span-6 p-5 rounded-2xl border border-orange-500/30 bg-orange-500/10 backdrop-blur-sm flex flex-col relative overflow-hidden hover:border-orange-500/50 transition-colors"
                     initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                >
-                    <div className="absolute inset-0 bg-gradient-to-br from-electric-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="px-2 py-0.5 rounded-full border border-accent-lime/30 bg-accent-lime/10 text-[10px] text-accent-lime font-mono uppercase tracking-wider flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-accent-lime animate-pulse" />
-                                System Online
-                            </div>
-                            <span className="text-[10px] text-white-soft/40 font-mono">ID: KUSHAL_V1.0</span>
-                        </div>
-
-                        <div className="mb-4">
-                            <MagnifyingTitle />
-                        </div>
-
-                        <h2 className="text-lg md:text-xl text-white-soft font-light tracking-wide mb-1">
-                            Systems-First <span className="text-white font-medium">Product Engineer</span>
-                        </h2>
-                        <p className="text-sm text-white-soft/60 font-mono">
-                            Architecture · Performance · DX
-                        </p>
-                    </div>
-                </motion.div>
-
-                {/* 2. CORE MODULES / STACK (Span 5) */}
-                <motion.div
-                    className="col-span-1 md:col-span-12 lg:col-span-5 p-5 rounded-2xl border border-orange-500/30 bg-orange-500/10 backdrop-blur-sm flex flex-col relative overflow-hidden hover:border-orange-500/50 transition-colors"
-                    initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
                 >
@@ -97,11 +66,11 @@ export const HeroContent = () => {
                     </div>
                 </motion.div>
 
-                {/* 3. SYS DIAGNOSTICS / METRICS (Span 5) */}
+                {/* 2. SYS DIAGNOSTICS / METRICS (Span 6) */}
                 <motion.div
-                    className="col-span-1 md:col-span-6 lg:col-span-5 p-5 rounded-2xl border border-rose-500/30 bg-rose-500/10 backdrop-blur-sm relative hover:border-rose-500/50 transition-colors"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    className="col-span-1 md:col-span-6 p-5 rounded-2xl border border-rose-500/30 bg-rose-500/10 backdrop-blur-sm relative hover:border-rose-500/50 transition-colors"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.4 }}
                 >
                     <h3 className="text-xs font-mono uppercase tracking-widest text-rose-200/70 mb-4 flex items-center gap-2">
@@ -140,9 +109,9 @@ export const HeroContent = () => {
                     </div>
                 </motion.div>
 
-                {/* 4. ACTIVE MISSIONS / PROJECTS NAV (Span 7) */}
+                {/* 3. ACTIVE MISSIONS / PROJECTS NAV (Span 12) */}
                 <motion.div
-                    className="col-span-1 md:col-span-6 lg:col-span-7 p-1 rounded-2xl border border-accent-lime/30 bg-accent-lime/10 backdrop-blur-sm relative overflow-hidden group cursor-pointer hover:border-accent-lime/60 transition-colors"
+                    className="col-span-1 md:col-span-12 p-1 rounded-2xl border border-accent-lime/30 bg-accent-lime/10 backdrop-blur-sm relative overflow-hidden group cursor-pointer hover:border-accent-lime/60 transition-colors"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}

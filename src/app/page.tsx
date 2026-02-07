@@ -13,6 +13,7 @@ import EasterEggOverlay from "@/components/EasterEggOverlay";
 import { useKonamiCode } from "@/hooks/useKonamiCode";
 import { projects } from "@/data/projects";
 import { ParallaxSection, ScrollReveal } from "@/components/ParallaxSection";
+import { ProjectPreview } from "@/components/ProjectPreview";
 import { motion } from "framer-motion";
 
 export default function Home() {
@@ -33,26 +34,13 @@ export default function Home() {
 
         <SectionDivider variant="laser" />
 
-        {/* Individual Project Deep Dives */}
+        {/* Individual Project Previews */}
         <div id="projects">
           {projects.map((project, index) => (
-            <div key={project.id} className="scroll-snap-section">
-              <ParallaxSection
-                id={project.id}
-                bgLayers={[
-                  {
-                    speed: 0.1,
-                    className: "opacity-30",
-                    content: (
-                      <div className="absolute inset-0 bg-gradient-to-b from-electric-primary/5 to-transparent" />
-                    )
-                  }
-                ]}
-              >
-                <ScrollReveal direction="up" delay={0.1}>
-                  <ProjectDeepDive project={project} />
-                </ScrollReveal>
-              </ParallaxSection>
+            <div key={project.id}>
+              <ScrollReveal direction="up" delay={0.1}>
+                <ProjectPreview project={project} />
+              </ScrollReveal>
               {index < projects.length - 1 && (
                 <SectionDivider variant="constellation" />
               )}

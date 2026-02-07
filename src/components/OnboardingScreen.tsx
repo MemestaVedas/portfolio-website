@@ -4,8 +4,11 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
+import { usePageTransition } from '@/context/PageTransitionContext';
+
 const OnboardingScreen = () => {
     const [phase, setPhase] = useState<'logo' | 'glow' | 'line' | 'split' | 'done'>('logo');
+    const { setHasOnboarded } = usePageTransition();
 
     useEffect(() => {
         // Animation timeline
@@ -17,11 +20,14 @@ const OnboardingScreen = () => {
         ];
 
         const timers = timeline.map(({ phase, delay }) =>
-            setTimeout(() => setPhase(phase), delay)
+            setTimeout(() => {
+                setPhase(phase);
+                if (phase === 'done') setHasOnboarded(true);
+            }, delay)
         );
 
         return () => timers.forEach(clearTimeout);
-    }, []);
+    }, [setHasOnboarded]);
 
     if (phase === 'done') return null;
 
@@ -41,6 +47,7 @@ const OnboardingScreen = () => {
                             duration: 0.8,
                             ease: [0.76, 0, 0.24, 1],
                         }}
+                        style={{ willChange: "transform" }}
                     >
                         <div
                             className="absolute inset-0 opacity-[0.05]"
@@ -63,6 +70,7 @@ const OnboardingScreen = () => {
                             style={{
                                 background: 'linear-gradient(90deg, transparent 0%, #C7F000 20%, #C7F000 80%, transparent 100%)',
                                 boxShadow: '0 0 20px #C7F000, 0 0 40px rgba(199, 240, 0, 0.5)',
+                                willChange: "transform, opacity"
                             }}
                         />
                     </motion.div>
@@ -78,6 +86,7 @@ const OnboardingScreen = () => {
                             duration: 0.8,
                             ease: [0.76, 0, 0.24, 1],
                         }}
+                        style={{ willChange: "transform" }}
                     >
                         <div
                             className="absolute inset-0 opacity-[0.05]"
@@ -100,6 +109,7 @@ const OnboardingScreen = () => {
                             style={{
                                 background: 'linear-gradient(90deg, transparent 0%, #C7F000 20%, #C7F000 80%, transparent 100%)',
                                 boxShadow: '0 0 20px #C7F000, 0 0 40px rgba(199, 240, 0, 0.5)',
+                                willChange: "transform, opacity"
                             }}
                         />
                     </motion.div>

@@ -72,6 +72,10 @@ export const projects: ProjectData[] = [
             "/projects/play-on-ss.png"
         ],
         tech: ["Rust", "Tauri", "React", "TypeScript", "Vite", "Tailwind"],
+        categorizedStack: [
+            { category: "Core", items: ["Rust", "Tauri"] },
+            { category: "Frontend", items: ["React", "TypeScript", "Tailwind", "Vite"] }
+        ],
         github: "https://github.com/kushal/play-on",
         demo: "https://play-on.app"
     },
@@ -149,6 +153,10 @@ export const projects: ProjectData[] = [
             "/VIBE-ON!_SS.png"
         ],
         tech: ["Kotlin", "Jetpack Compose", "Rust", "WebSockets", "UDP", "Opus"],
+        categorizedStack: [
+            { category: "PC", items: ["Rust", "WebSockets", "UDP", "Opus"] },
+            { category: "Mobile", items: ["Kotlin", "Jetpack Compose"] }
+        ],
         techTooltips: {
             "Opus": "The JS library, not anthropic's model lol"
         },

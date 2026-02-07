@@ -24,12 +24,12 @@ const navigationData: NavigationNode[] = [
 const ConstellationNav = () => {
     const [activeSection, setActiveSection] = useState('home');
     const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+    const [isVisible, setIsVisible] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const [bgStars, setBgStars] = useState<{ id: number, left: string, top: string, duration: number, delay: number }[]>([]);
 
     useEffect(() => {
         setIsMounted(true);
-        // Generate stars only on the client to avoid hydration mismatch
         const stars = [...Array(12)].map((_, i) => ({
             id: i,
             left: `${Math.random() * 100}%`,
@@ -44,6 +44,9 @@ const ConstellationNav = () => {
     // Detect active section based on scroll position
     useEffect(() => {
         const handleScroll = () => {
+            // Visibility check: Show only after scrolling past 75% of viewport (TV pin point)
+            setIsVisible(window.scrollY > window.innerHeight * 0.75);
+
             const sections = ['home', 'about', 'projects', 'skills', 'meta', 'contact'];
             const scrollPosition = window.scrollY + window.innerHeight * 0.4;
 
@@ -100,16 +103,18 @@ const ConstellationNav = () => {
     };
 
     return (
-        <div
+        <motion.div
             ref={containerRef}
             className="fixed top-1/2 -translate-y-1/2 w-64 h-[600px] z-40 hidden xl:block pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isVisible ? 1 : 0 }}
+            transition={{ duration: 0.5 }}
             style={{
-                right: 'calc((100vw - 1280px) / 2 + -15rem)',
+                right: '2rem', // Fixed safety margin from the right edge
                 maxWidth: '280px',
             }}
         >
             <div className="relative w-full h-full">
-                {/* SVG Canvas for Connection Lines */}
                 <svg
                     className="absolute inset-0 w-full h-full overflow-visible"
                     viewBox="0 0 100 100"
@@ -154,12 +159,12 @@ const ConstellationNav = () => {
                                         strokeLinecap="round"
                                         initial={{ pathLength: 0, opacity: 0 }}
                                         animate={{
-                                            pathLength: 1,
-                                            opacity: isHighlighted ? 1 : 0.5,
+                                            pathLength: isVisible ? 1 : 0, // Animate path only when visible
+                                            opacity: isVisible ? (isHighlighted ? 1 : 0.5) : 0,
                                             strokeWidth: isHighlighted ? "0.5" : "0.3"
                                         }}
                                         transition={{
-                                            pathLength: { duration: 1.5, delay: 0.5 },
+                                            pathLength: { duration: 1.5, delay: isVisible ? 0.5 : 0 }, // Add delay relative to star pop
                                             opacity: { duration: 0.3 },
                                             strokeWidth: { duration: 0.3 }
                                         }}
@@ -190,9 +195,13 @@ const ConstellationNav = () => {
                             <motion.div
                                 className="pointer-events-auto flex items-center justify-center relative"
                                 initial={{ scale: 0, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
+                                animate={{
+                                    scale: isVisible ? 1 : 0, // Pop in when visible
+                                    opacity: isVisible ? 1 : 0
+                                }}
                                 transition={{
-                                    delay: 0.3 + index * 0.1,
+                                    // Stagger the pop-in based on index when becoming visible
+                                    delay: isVisible ? 0.3 + index * 0.1 : 0,
                                     type: 'spring',
                                     stiffness: 260,
                                     damping: 20
@@ -225,16 +234,16 @@ const ConstellationNav = () => {
                                     />
                                 </motion.svg>
 
-                                {/* Label */}
+                                {/* Label - Positioned to the LEFT now */}
                                 <motion.div
-                                    className={`absolute left-full ml-4 whitespace-nowrap pointer-events-none ${isActive ? 'opacity-100' : 'opacity-0'}`}
+                                    className={`absolute right-full mr-4 whitespace-nowrap pointer-events-none ${isActive ? 'opacity-100' : 'opacity-0'}`}
                                     animate={{
-                                        opacity: isHovered || isActive ? 1 : 0,
-                                        x: isHovered || isActive ? 0 : -10,
+                                        opacity: (isVisible && (isHovered || isActive)) ? 1 : 0,
+                                        x: (isHovered || isActive) ? 0 : 10,
                                     }}
                                     transition={{ duration: 0.2 }}
                                 >
-                                    <span className={`font-mono text-sm tracking-wider ${isActive
+                                    <span className={`font-mono text-sm tracking-wider text-right block ${isActive
                                         ? 'text-accent-lime font-bold'
                                         : 'text-white-soft'
                                         }`}>
@@ -256,7 +265,7 @@ const ConstellationNav = () => {
                             top: star.top,
                         }}
                         animate={{
-                            opacity: [0.2, 0.6, 0.2],
+                            opacity: isVisible ? [0.2, 0.6, 0.2] : 0, // Only twinkle when visible
                             scale: [1, 1.5, 1],
                         }}
                         transition={{
@@ -267,7 +276,7 @@ const ConstellationNav = () => {
                     />
                 ))}
             </div>
-        </div>
+        </motion.div>
     );
 };
 

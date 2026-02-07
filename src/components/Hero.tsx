@@ -5,6 +5,7 @@ import FixedTVParallax from './FixedTVParallax';
 import HeroContent from './HeroContent';
 import HeroDecorativeElements from './HeroDecorativeElements';
 import AboutSection from './AboutSection';
+import QuoteSection from './QuoteSection';
 
 /**
  * Hero Section with Fixed TV Parallax Effect
@@ -14,6 +15,7 @@ const Hero = () => {
     return (
         <FixedTVParallax
             heroContent={<HeroContent />}
+            quoteContent={<QuoteSection />}
             aboutContent={<AboutSection />}
             decorativeElements={<HeroDecorativeElements />}
         />
