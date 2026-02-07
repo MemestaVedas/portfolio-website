@@ -1,77 +1,99 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import { motion, useMotionValue } from 'framer-motion';
 
 // Cursor trail effect (Y2K aesthetic)
-// Optimized to reduce react renders using RequestAnimationFrame
+// Optimized to ZERO react renders using MotionValues and Springs
 export const CursorTrail = () => {
-    const [trails, setTrails] = useState<Array<{ id: number, x: number, y: number }>>([]);
-    const requestRef = useRef<number | null>(null);
-    const mousePos = useRef<{ x: number, y: number } | null>(null);
+    // Create a pool of "ghost" cursors
+    // We use springs to make them follow each other with delay
+    const cursorCount = 12;
+    const cursors = Array.from({ length: cursorCount }).map((_, i) => ({
+        x: useMotionValue(0),
+        y: useMotionValue(0),
+        key: i
+    }));
+
+    // We only need one spring configuration for smooth following
+    const springConfig = { damping: 20, stiffness: 150, mass: 0.5 };
+
+    // Refs to track actual mouse position without state
+    const mousePos = useRef({ x: -100, y: -100 });
+    const rafId = useRef<number | null>(null);
 
     useEffect(() => {
+        // Initialize off-screen
+        cursors.forEach(c => {
+            c.x.set(-100);
+            c.y.set(-100);
+        });
+
         const handleMouseMove = (e: MouseEvent) => {
             mousePos.current = { x: e.clientX, y: e.clientY };
+
+            // Should active cursor be visible? handled by CSS or initial pos
         };
 
-        const animate = () => {
-            if (mousePos.current) {
-                const newTrail = {
-                    id: Date.now(),
-                    x: mousePos.current.x,
-                    y: mousePos.current.y,
-                };
+        // Physics loop
+        const updatePhysics = () => {
+            let targetX = mousePos.current.x;
+            let targetY = mousePos.current.y;
 
-                setTrails(prev => {
-                    // Only add if significantly different or enough time passed? 
-                    // For now, just keep last 8 to match original feel, but maybe check distance?
-                    // Actually, to truly optimize, we should limit updates.
-                    // But here we are just syncing to RAF.
+            // Update first cursor to follow mouse directly (or with very tight spring)
+            // Then each subsequent cursor follows the previous one
+            cursors.forEach((cursor, i) => {
+                const currentX = cursor.x.get();
+                const currentY = cursor.y.get();
 
-                    // Simple optimization: Limit array growth strictly
-                    const newTrails = [...prev, newTrail];
-                    if (newTrails.length > 8) {
-                        return newTrails.slice(newTrails.length - 8);
-                    }
-                    return newTrails;
-                });
+                // Simple lerp for trail effect (cheaper than spring hook for many items)
+                // The delay increases with index
+                const lerpFactor = 0.35 - (i * 0.02); // 0.35 -> 0.15
 
-                // Clear the pos so we don't duplicate trails if mouse stops
-                mousePos.current = null;
-            }
+                const nextX = currentX + (targetX - currentX) * lerpFactor;
+                const nextY = currentY + (targetY - currentY) * lerpFactor;
 
-            // Clean up old trails
-            setTrails(prev => {
-                const now = Date.now();
-                const filtered = prev.filter(t => now - t.id < 800);
-                return filtered.length !== prev.length ? filtered : prev;
+                cursor.x.set(nextX);
+                cursor.y.set(nextY);
+
+                // The next cursor follows THIS cursor's *current* position (creating a chain)
+                // Actually, for a "following" trail, they should all follow the mouse but with different delay/lerp?
+                // OR follow the previous one? Following previous one creates a "snake" effect.
+                // Following mouse with different lerp creates a "swarm" or "echo" effect.
+                // The original code was an echo (trails stayed where they were spawned).
+
+                // To mimic original "fading trail" effect without adding/removing nodes:
+                // We can't easily do "stay where spawned" with a fixed pool without cycling them.
+                // BUT, a snake effect is usually more performant and looks cooler for Y2K.
+                // Let's stick to the "snake/follow" effect for max performance.
+
+                targetX = nextX;
+                targetY = nextY;
             });
 
-            requestRef.current = requestAnimationFrame(animate);
+            rafId.current = requestAnimationFrame(updatePhysics);
         };
 
         window.addEventListener('mousemove', handleMouseMove);
-        requestRef.current = requestAnimationFrame(animate);
+        rafId.current = requestAnimationFrame(updatePhysics);
 
         return () => {
             window.removeEventListener('mousemove', handleMouseMove);
-            if (requestRef.current) cancelAnimationFrame(requestRef.current);
+            if (rafId.current) cancelAnimationFrame(rafId.current);
         };
     }, []);
 
     return (
         <div className="fixed inset-0 pointer-events-none z-50">
-            {trails.map((trail) => (
+            {cursors.map((cursor, i) => (
                 <motion.div
-                    key={trail.id}
+                    key={cursor.key}
                     className="absolute w-2 h-2 rounded-full bg-accent-cyan box-shadow-glow"
                     style={{
-                        left: trail.x,
-                        top: trail.y,
-                        boxShadow: '0 0 8px currentColor'
+                        x: cursor.x, // Use x/y transform instead of left/top for performance
+                        y: cursor.y,
+                        boxShadow: '0 0 8px currentColor',
+                        opacity: 1 - (i / cursorCount), // Fade out tail
+                        scale: 1 - (i / cursorCount) * 0.5, // Shrink tail
                     }}
-                    initial={{ opacity: 0.8, scale: 1 }}
-                    animate={{ opacity: 0, scale: 0 }}
-                    transition={{ duration: 0.8, ease: 'easeOut' }}
                 />
             ))}
         </div>

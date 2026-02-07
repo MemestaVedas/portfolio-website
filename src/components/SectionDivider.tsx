@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 
 interface SectionDividerProps {
     variant?: 'laser' | 'chrome' | 'grid' | 'constellation';
@@ -16,41 +16,74 @@ export const SectionDivider: React.FC<SectionDividerProps> = ({
     variant = 'laser',
     className = ''
 }) => {
-    const { scrollYProgress } = useScroll();
+    const ref = useRef<HTMLDivElement>(null);
+    const isInView = useInView(ref, { once: true, amount: 0.5 });
 
-    // Parallax transforms
-    const lineX = useTransform(scrollYProgress, [0, 1], ['-20%', '20%']);
-    const starOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.3, 0.8, 0.3]);
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        offset: ["start end", "end start"]
+    });
+
+    // Enhanced parallax transforms
+    const lineX = useTransform(scrollYProgress, [0, 1], ['-25%', '25%']);
+    const starOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.3, 0.9, 0.3]);
+    const pulseScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1.05, 0.95]);
 
     if (variant === 'laser') {
         return (
-            <div className={`relative h-24 overflow-hidden ${className}`}>
-                {/* Central laser line */}
+            <div ref={ref} className={`relative h-24 overflow-hidden ${className}`}>
+                {/* Central laser line with entrance animation */}
                 <motion.div
                     className="absolute top-1/2 left-0 right-0 h-[2px] -translate-y-1/2"
                     style={{ x: lineX }}
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={isInView ? { scaleX: 1, opacity: 1 } : {}}
+                    transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
                 >
-                    <div
+                    <motion.div
                         className="w-full h-full"
                         style={{
                             background: 'linear-gradient(90deg, transparent 0%, #C7F000 20%, #C7F000 50%, #C7F000 80%, transparent 100%)',
                             boxShadow: '0 0 20px #C7F000, 0 0 40px rgba(199, 240, 0, 0.4)',
                         }}
+                        animate={{
+                            boxShadow: [
+                                '0 0 20px #C7F000, 0 0 40px rgba(199, 240, 0, 0.4)',
+                                '0 0 30px #C7F000, 0 0 60px rgba(199, 240, 0, 0.6)',
+                                '0 0 20px #C7F000, 0 0 40px rgba(199, 240, 0, 0.4)'
+                            ]
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
                     />
                 </motion.div>
 
-                {/* Decorative endpoints */}
-                <div className="absolute top-1/2 left-8 -translate-y-1/2 w-2 h-2 rounded-full bg-accent-lime shadow-glow" />
-                <div className="absolute top-1/2 right-8 -translate-y-1/2 w-2 h-2 rounded-full bg-accent-lime shadow-glow" />
+                {/* Decorative endpoints with pulse */}
+                <motion.div
+                    className="absolute top-1/2 left-8 -translate-y-1/2 w-2 h-2 rounded-full bg-accent-lime shadow-glow"
+                    initial={{ scale: 0 }}
+                    animate={isInView ? { scale: 1 } : {}}
+                    transition={{ delay: 0.3, duration: 0.5, type: 'spring' }}
+                    style={{ scale: pulseScale }}
+                />
+                <motion.div
+                    className="absolute top-1/2 right-8 -translate-y-1/2 w-2 h-2 rounded-full bg-accent-lime shadow-glow"
+                    initial={{ scale: 0 }}
+                    animate={isInView ? { scale: 1 } : {}}
+                    transition={{ delay: 0.4, duration: 0.5, type: 'spring' }}
+                    style={{ scale: pulseScale }}
+                />
             </div>
         );
     }
 
     if (variant === 'chrome') {
         return (
-            <div className={`relative h-16 overflow-hidden ${className}`}>
+            <div ref={ref} className={`relative h-16 overflow-hidden ${className}`}>
                 <motion.div
                     className="absolute inset-x-8 top-1/2 -translate-y-1/2 h-[3px] rounded-full"
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={isInView ? { scaleX: 1, opacity: 1 } : {}}
+                    transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                     style={{
                         background: 'linear-gradient(90deg, transparent, #a5b4ff 20%, #e0e5ff 50%, #a5b4ff 80%, transparent)',
                         boxShadow: '0 0 15px rgba(165, 180, 255, 0.3)',
@@ -62,7 +95,7 @@ export const SectionDivider: React.FC<SectionDividerProps> = ({
 
     if (variant === 'grid') {
         return (
-            <div className={`relative h-32 overflow-hidden ${className}`}>
+            <div ref={ref} className={`relative h-32 overflow-hidden ${className}`}>
                 {/* Perspective grid lines fading into distance */}
                 <motion.div
                     className="absolute inset-0"
@@ -99,7 +132,7 @@ export const SectionDivider: React.FC<SectionDividerProps> = ({
 
     if (variant === 'constellation') {
         return (
-            <div className={`relative h-20 overflow-hidden ${className}`}>
+            <div ref={ref} className={`relative h-20 overflow-hidden ${className}`}>
                 {/* Scattered star points with connecting lines */}
                 <svg viewBox="0 0 1200 80" className="w-full h-full" preserveAspectRatio="none">
                     {/* Connecting lines */}
@@ -152,7 +185,7 @@ export const SectionDivider: React.FC<SectionDividerProps> = ({
         );
     }
 
-    return null;
+    return <div ref={ref} className={className} />;
 };
 
 export default SectionDivider;

@@ -427,128 +427,152 @@ const Hero = () => {
                                 </div>
                             )}
 
-                            {/* Main Content */}
-                            <div className="relative z-10">
-                                {/* Name + Title */}
-                                <div className="mb-6 md:mb-8">
-                                    <div className="flex items-center gap-4 mb-3">
-                                        <MagnifyingTitle />
-                                        {!isLowPower && (
-                                            <motion.div
-                                                className="w-7 h-7 text-accent-lime"
-                                                animate={{ rotate: [0, 360] }}
-                                                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                                            >
-                                                <Y2KIcons.Star />
-                                            </motion.div>
-                                        )}
-                                    </div>
-                                    <ShootingStarUnderline />
-                                </div>
+                            {/* MAIN BENTO DASHBOARD */}
+                            <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-4 h-full">
 
-                                <p className="font-body text-lg md:text-xl text-white-soft mb-2">
-                                    Systems-First Product Engineer
-                                </p>
-
-                                <div className="flex items-center gap-3 text-white-soft/70 mb-8">
-                                    <div className="w-5 h-5 text-accent-cyan">
-                                        <Y2KIcons.Grid />
-                                    </div>
-                                    <span className="font-mono text-xs md:text-sm">Final Year ISE @ DSCE</span>
-                                </div>
-
-                                {/* Proof Points */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5 mb-6">
-                                    <ProofPoint
-                                        label="Stack"
-                                        value="Rust Â· C++ Â· TS"
-                                        icon={<Y2KIcons.Arrow />}
-                                        delay={0}
-                                    />
-                                    <ProofPoint
-                                        label="Focus"
-                                        value="Tauri Â· Systems Â· Perf"
-                                        icon={<Y2KIcons.Orbit />}
-                                        delay={0.05}
-                                    />
-                                    <ProofPoint
-                                        label="Approach"
-                                        value="Measure Everything"
-                                        icon={<Y2KIcons.Grid />}
-                                        delay={0.1}
-                                    />
-                                </div>
-
-                                {/* Metrics Panel */}
+                                {/* 1. IDENTITY MODULE (Span 7) */}
                                 <motion.div
-                                    className="border-2 border-accent-lime/50 rounded-2xl p-4 md:p-5 bg-black/40 backdrop-blur-sm"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.3, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                                    className="col-span-1 md:col-span-12 lg:col-span-7 flex flex-col justify-center p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm relative overflow-hidden group"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.2 }}
                                 >
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="w-4 h-4 text-accent-lime">
-                                            <Y2KIcons.Star />
-                                        </div>
-                                        <p className="text-xs text-white-soft/80 font-mono uppercase tracking-wider">
-                                            Electron-class UX at:
-                                        </p>
-                                    </div>
+                                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                                    <div className="grid grid-cols-3 gap-3 md:gap-6">
-                                        <MetricDisplay
-                                            value="~7MB"
-                                            label="Binary Size"
-                                            compare="vs 120MB"
-                                            accentColor="lime"
-                                        />
-                                        <MetricDisplay
-                                            value="42MB"
-                                            label="Idle RAM"
-                                            compare="vs 180MB"
-                                            accentColor="cyan"
-                                        />
-                                        <MetricDisplay
-                                            value="0.3ms"
-                                            label="IPC Latency"
-                                            compare="Rust native"
-                                            accentColor="pink"
-                                        />
+                                    <div className="relative z-10">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <div className="px-2 py-0.5 rounded-full border border-accent-lime/30 bg-accent-lime/10 text-[10px] text-accent-lime font-mono uppercase tracking-wider flex items-center gap-2">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-accent-lime animate-pulse" />
+                                                System Online
+                                            </div>
+                                            <span className="text-[10px] text-white-soft/40 font-mono">ID: KUSHAL_V1.0</span>
+                                        </div>
+
+                                        <div className="mb-4">
+                                            <MagnifyingTitle />
+                                        </div>
+
+                                        <h2 className="text-lg md:text-xl text-white-soft font-light tracking-wide mb-1">
+                                            Systems-First <span className="text-white font-medium">Product Engineer</span>
+                                        </h2>
+                                        <p className="text-sm text-white-soft/60 font-mono">
+                                            Architecture Â· Performance Â· DX
+                                        </p>
                                     </div>
                                 </motion.div>
 
-                                {/* Bottom row: Quick Nav */}
-                                <div className="mt-6 flex flex-col md:flex-row items-start md:items-center justify-end gap-4">
-                                    {/* Quick Nav */}
-                                    <motion.nav
-                                        className="flex flex-wrap gap-3 md:gap-5 text-xs md:text-sm font-mono"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 0.5, duration: 0.3 }}
-                                    >
-                                        <a
-                                            href="#projects"
-                                            className="flex items-center gap-2 text-accent-lime hover:text-white-pure transition-colors group"
-                                        >
-                                            <span>Projects</span>
-                                            <div className="w-3 h-3 group-hover:translate-x-1 transition-transform">
+                                {/* 2. CORE MODULES / STACK (Span 5) */}
+                                <motion.div
+                                    className="col-span-1 md:col-span-12 lg:col-span-5 p-5 rounded-2xl border border-white/10 bg-black/20 backdrop-blur-sm flex flex-col relative overflow-hidden"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.3 }}
+                                >
+                                    <h3 className="text-xs font-mono uppercase tracking-widest text-white-soft/50 mb-4 flex items-center gap-2">
+                                        <Y2KIcons.Orbit />
+                                        Core Modules
+                                    </h3>
+                                    <div className="grid grid-cols-2 gap-2 flex-1">
+                                        {[
+                                            { label: "RUST", color: "text-orange-400", bg: "bg-orange-400/10" },
+                                            { label: "NEXT.JS", color: "text-white", bg: "bg-white/10" },
+                                            { label: "TAURI", color: "text-cyan-400", bg: "bg-cyan-400/10" },
+                                            { label: "SYSTEMS", color: "text-purple-400", bg: "bg-purple-400/10" }
+                                        ].map((tech, i) => (
+                                            <div key={tech.label} className={`flex items-center justify-center p-2 rounded-lg border border-white/5 ${tech.bg} hover:border-white/20 transition-colors`}>
+                                                <span className={`text-xs font-bold tracking-wider ${tech.color}`}>{tech.label}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-3 pt-3 border-t border-white/5 flex justify-between items-center">
+                                        <span className="text-[10px] text-white-soft/40 font-mono">MODULES_LOADED</span>
+                                        <div className="flex gap-1">
+                                            {[1, 2, 3, 4].map(i => <div key={i} className="w-1 h-3 bg-accent-lime/40 rounded-sm" />)}
+                                        </div>
+                                    </div>
+                                </motion.div>
+
+                                {/* 3. SYS DIAGNOSTICS / METRICS (Span 5) */}
+                                <motion.div
+                                    className="col-span-1 md:col-span-6 lg:col-span-5 p-5 rounded-2xl border border-white/10 bg-black/20 backdrop-blur-sm relative"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.4 }}
+                                >
+                                    <h3 className="text-xs font-mono uppercase tracking-widest text-white-soft/50 mb-4 flex items-center gap-2">
+                                        <Y2KIcons.Grid />
+                                        Sys. Diagnostics
+                                    </h3>
+
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs text-white-soft/70">Binary Size</span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-mono text-accent-lime">~7MB</span>
+                                                <div className="w-16 h-1 bg-white/10 rounded-full overflow-hidden">
+                                                    <div className="w-[10%] h-full bg-accent-lime" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs text-white-soft/70">Idle RAM</span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-mono text-accent-cyan">42MB</span>
+                                                <div className="w-16 h-1 bg-white/10 rounded-full overflow-hidden">
+                                                    <div className="w-[30%] h-full bg-accent-cyan" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-xs text-white-soft/70">Latency</span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-mono text-accent-pink">0.3ms</span>
+                                                <div className="w-16 h-1 bg-white/10 rounded-full overflow-hidden">
+                                                    <div className="w-[80%] h-full bg-accent-pink" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+
+                                {/* 4. ACTIVE MISSIONS / PROJECTS NAV (Span 7) */}
+                                <motion.div
+                                    className="col-span-1 md:col-span-6 lg:col-span-7 p-1 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm relative overflow-hidden group cursor-pointer"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.5 }}
+                                >
+                                    <a href="#projects" className="block h-full w-full p-5 relative z-10">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h3 className="text-xs font-mono uppercase tracking-widest text-white-soft/50 flex items-center gap-2">
+                                                <Y2KIcons.Star />
+                                                Active Missions
+                                            </h3>
+                                            <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                                                 <Y2KIcons.Arrow />
                                             </div>
-                                        </a>
-                                        <a
-                                            href="#architecture"
-                                            className="text-white-soft/70 hover:text-white-pure transition-colors"
-                                        >
-                                            Architecture
-                                        </a>
-                                        <a
-                                            href="#meta"
-                                            className="text-white-soft/70 hover:text-white-pure transition-colors"
-                                        >
-                                            Performance
-                                        </a>
-                                    </motion.nav>
-                                </div>
+                                        </div>
+
+                                        <div className="flex gap-4 mt-4">
+                                            <div className="flex-1 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-accent-lime/50 transition-colors group/item">
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <span className="text-sm font-bold text-white group-hover/item:text-accent-lime transition-colors">YAP</span>
+                                                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-white/50">WIP</span>
+                                                </div>
+                                                <p className="text-[10px] text-white-soft/60 line-clamp-1">Yet Another Portfolio</p>
+                                            </div>
+                                            <div className="flex-1 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-accent-pink/50 transition-colors group/item">
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <span className="text-sm font-bold text-white group-hover/item:text-accent-pink transition-colors">VIBE-ON</span>
+                                                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent-lime/10 text-accent-lime">LIVE</span>
+                                                </div>
+                                                <p className="text-[10px] text-white-soft/60 line-clamp-1">Music Player</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-accent-cyan via-accent-lime to-accent-pink opacity-50 group-hover:opacity-100 transition-opacity" />
+                                    </a>
+                                </motion.div>
                             </div>
                         </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import { Github, FileText } from 'lucide-react';
 import { Y2KIcons } from './Y2KIcons';
 import ConstellationNav from './ConstellationNav';
@@ -181,7 +181,8 @@ const DecryptLabel = ({ text, active = false }: { text: string; active?: boolean
 };
 
 const NavItem = ({ href, label, active = false, onClick, isLowPower }: { href: string, label: string, active?: boolean, onClick: () => void, isLowPower: boolean }) => {
-    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
     const ref = useRef<HTMLAnchorElement>(null);
 
     const handleMouseMove = (e: React.MouseEvent) => {
@@ -194,14 +195,14 @@ const NavItem = ({ href, label, active = false, onClick, isLowPower }: { href: s
         const distanceX = e.clientX - centerX;
         const distanceY = e.clientY - centerY;
 
-        setMousePos({
-            x: Math.max(-8, Math.min(8, distanceX * 0.2)),
-            y: Math.max(-8, Math.min(8, distanceY * 0.2)),
-        });
+        // Directly update motion values without triggering re-render
+        x.set(Math.max(-8, Math.min(8, distanceX * 0.2)));
+        y.set(Math.max(-8, Math.min(8, distanceY * 0.2)));
     };
 
     const handleMouseLeave = () => {
-        setMousePos({ x: 0, y: 0 });
+        x.set(0);
+        y.set(0);
     };
 
     return (
@@ -219,7 +220,7 @@ const NavItem = ({ href, label, active = false, onClick, isLowPower }: { href: s
       `}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            animate={{ x: mousePos.x, y: mousePos.y }}
+            style={{ x, y }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         >
             {/* Active indicator - Cyber Lamp (Bottom Glow) */}
