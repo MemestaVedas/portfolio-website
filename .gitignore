@@ -28,6 +28,7 @@
 Thumbs.db
 *.swp
 *.swo
+.agents/*
 
 # debug
 npm-debug.log*

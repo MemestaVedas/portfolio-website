@@ -51,7 +51,7 @@
   --font-mono: var(--font-mono-stack), monospace;
   --font-metric: var(--font-mono-stack), monospace;
   --font-ui: var(--font-body-stack), sans-serif;
-  --font-druk: 'Druk', 'Impact', 'Arial Black', sans-serif;
+  --font-druk: var(--font-druk-stack), 'Druk', 'Impact', 'Arial Black', sans-serif;
 }
 
 /* Utilities that use the theme variables */
@@ -214,9 +214,15 @@ html {
     scrollbar-width: none;
   }
 
-  /* Hide scrollbar globally */
-  body::-webkit-scrollbar {
-    display: none;
+  /* Hide default cursor globally */
+  body,
+  a,
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea {
+    cursor: none !important;
   }
 
   body {

@@ -26,14 +26,9 @@ export default function Home() {
       <main className="bg-blueprint-base min-h-screen scroll-snap-proximity">
         <Navigation />
 
-        {/* Hero Section with Parallax */}
+        {/* Hero Section with Parallax (includes About inside TV) */}
         <div className="scroll-snap-section">
           <Hero />
-        </div>
-
-        {/* About Section with Reveal */}
-        <div className="scroll-snap-section">
-          <AboutSection />
         </div>
 
         <SectionDivider variant="laser" />
