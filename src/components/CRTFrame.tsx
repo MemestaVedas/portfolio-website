@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, MotionValue, useMotionTemplate } from 'framer-motion';
+import { motion, MotionValue, useMotionTemplate, useTransform, useMotionValue } from 'framer-motion';
 
 interface CRTFrameProps {
     children: React.ReactNode;
@@ -25,6 +25,22 @@ export const CRTFrame: React.FC<CRTFrameProps> = ({
     // Dynamic background with motion template for performance
     const background = useMotionTemplate`linear-gradient(135deg, rgba(10,10,10,${screenOpacity}) 0%, rgba(0,0,0,${screenOpacity}) 50%, rgba(10,10,10,${screenOpacity}) 100%)`;
 
+    // Dynamic shadow opacity to reduce GPU load during expansion
+    // If scale is > 1.5, we want to reduce shadow intensity
+    // We'll use a derived value if scale is a MotionValue, or static if number
+    const shadowOpacity = useTransform(
+        typeof scale === 'number' ? useMotionValue(scale) : scale,
+        [1, 5],
+        [0.5, 0]
+    );
+
+    const shadow = useMotionTemplate`
+        0 40px 80px rgba(0,0,0,${shadowOpacity}),
+        0 20px 40px rgba(0,0,0,${useTransform(shadowOpacity, o => o * 0.8)}),
+        inset 0 2px 0 rgba(255,255,255,0.08),
+        inset 0 -2px 0 rgba(0,0,0,${useTransform(shadowOpacity, o => o * 0.6)})
+    `;
+
     return (
         <motion.div
             className={`relative w-full max-w-5xl mx-6 md:mx-8 ${className}`}
@@ -44,12 +60,8 @@ export const CRTFrame: React.FC<CRTFrameProps> = ({
                     borderRadius: typeof borderRadius === 'number' ? `${borderRadius}px` : borderRadius,
                     background: 'linear-gradient(145deg, #2a2a45 0%, #1a1a2e 50%, #0d0d1a 100%)',
                     opacity: frameOpacity,
-                    boxShadow: `
-                        0 40px 80px rgba(0,0,0,0.5),
-                        0 20px 40px rgba(0,0,0,0.4),
-                        inset 0 2px 0 rgba(255,255,255,0.08),
-                        inset 0 -2px 0 rgba(0,0,0,0.3)
-                    `,
+                    boxShadow: shadow,
+                    willChange: 'transform, border-radius, box-shadow'
                 }}
             >
                 {/* CRT bezel highlight (top edge reflection) */}

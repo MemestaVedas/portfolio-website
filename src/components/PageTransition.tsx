@@ -29,7 +29,7 @@ const PageTransition = () => {
                             }}
                             exit={{ scaleY: 0 }}
                             transition={{
-                                duration: 0.8,
+                                duration: 1.0,
                                 ease: [0.76, 0, 0.24, 1],
                             }}
                             style={{ willChange: "transform" }}
@@ -71,7 +71,7 @@ const PageTransition = () => {
                             }}
                             exit={{ scaleY: 0 }}
                             transition={{
-                                duration: 0.8,
+                                duration: 1.0,
                                 ease: [0.76, 0, 0.24, 1],
                             }}
                             style={{ willChange: "transform" }}

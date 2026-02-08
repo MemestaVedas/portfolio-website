@@ -9,14 +9,14 @@ export const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         // Initialize Lenis with smooth, Apple-like easing
         const lenis = new Lenis({
-            lerp: 0.1,
-            duration: 0.8,
+            lerp: 0.07, // Smoother, slightly heavier feel
+            duration: 1.2, // Longer settling time for elegance
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential Out
             orientation: 'vertical',
             gestureOrientation: 'vertical',
             smoothWheel: true,
-            wheelMultiplier: 1,
-            touchMultiplier: 2,
+            wheelMultiplier: 0.9, // slightly reduced speed for control
+            touchMultiplier: 1.5, // slightly reduced sensitivity for mobile
         });
 
         lenisRef.current = lenis;

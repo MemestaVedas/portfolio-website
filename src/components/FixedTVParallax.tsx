@@ -56,11 +56,11 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
     const contentY = useTransform(
         scrollYProgress,
         //  Quote In | Quote Ctr | Hero In | Hero HOLD | Text In | Text Out
-        [0.2, 0.35, 0.45, 0.70, 0.80, 0.90],
+        [0.15, 0.30, 0.40, 0.75, 0.85, 0.95],
         ['70%', '35%', '0%', '0%', '-35%', '-70%']
     );
 
-    // --- PHASE 3: ORGANIC MORPH / EXPANSION (0.90 - 1.0) ---
+    // --- PHASE 3: ORGANIC MORPH / EXPANSION (0.95 - 1.0) ---
     // TV morphs organically to fill viewport with elastic easing
     // Starts later now to allow content to shine
 
@@ -69,7 +69,7 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
 
     // Calculate target scale dynamically (viewport / TV frame)
     // SLOWER: Extended range from 0.90 to 1.0
-    const tvScaleRaw = useTransform(scrollYProgress, [0.90, 1.0], [1, 25]);
+    const tvScaleRaw = useTransform(scrollYProgress, [0.95, 1.0], [1, 25]);
 
     // Apply spring physics to the scale for organic bouncy feel
     const tvScale = useSpring(tvScaleRaw, {
@@ -81,29 +81,29 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
     // Border radius morphs from rounded to sharp - SLOWER match
     const tvBorderRadius = useTransform(
         scrollYProgress,
-        [0.90, 0.95, 1.0],
-        [64, 32, 0] // 4rem -> 2rem -> 0
+        [0.95, 0.99],
+        [64, 0] // 4rem -> 0
     );
 
     // Frame opacity - becomes transparent to reveal content behind
-    const frameOpacity = useTransform(scrollYProgress, [0.92, 0.98], [1, 0]);
+    const frameOpacity = useTransform(scrollYProgress, [0.98, 0.995], [1, 0]);
 
     // Screen content opacity - fades out the CRT content
-    const screenOpacity = useTransform(scrollYProgress, [0.92, 0.98], [1, 0]);
+    const screenOpacity = useTransform(scrollYProgress, [0.95, 0.99], [1, 0]);
 
     // Internal content - "scrolling reel" effect
     // Content inside TV slides UP and OUT as if scrolling off screen
-    // Starts at 0.90 now
     const internalContentY = useTransform(
         scrollYProgress,
-        [0.90, 1.0],
+        [0.95, 1.0],
         ['0%', '-100%'] // Slides up and completely out
     );
-    const internalContentOpacity = useTransform(scrollYProgress, [0.90, 0.96], [1, 0]);
-    const internalContentBlur = useTransform(scrollYProgress, [0.90, 0.96], [0, 12]); // More blur
+    // FIXED: Content stays visible longer
+    const internalContentOpacity = useTransform(scrollYProgress, [0.96, 0.99], [1, 0]);
+    const internalContentBlur = useTransform(scrollYProgress, [0.96, 0.99], [0, 12]); // More blur
 
     // Background Opacity - Fades out to reveal content behind
-    const bgOpacity = useTransform(scrollYProgress, [0.90, 0.98], [1, 0]);
+    const bgOpacity = useTransform(scrollYProgress, [0.95, 0.99], [1, 0]);
 
     // Background layers - Full scroll exit
     const backgroundY = useTransform(scrollYProgress, [0.05, 0.4], ['0vh', '-100vh']);
@@ -115,7 +115,7 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
         <div
             ref={containerRef}
             className="relative"
-            style={{ height: '550vh' }}
+            style={{ height: '400vh' }}
         >
             {/* Sticky Container - Center of Viewport */}
             <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">
