@@ -240,8 +240,8 @@ html {
   }
 }
 
-/* === SCROLL SNAP BEHAVIOR === */
-@utility scroll-snap-container {
+/* === SCROLL SNAP BEHAVIOR REMOVED FOR LENIS SMOOTH SCROLL === */
+/* @utility scroll-snap-container {
   scroll-snap-type: y mandatory;
   overflow-y: scroll;
   scroll-behavior: smooth;
@@ -254,7 +254,7 @@ html {
 
 @utility scroll-snap-proximity {
   scroll-snap-type: y proximity;
-}
+} */
 
 /* === STAGGERED REVEAL ANIMATIONS === */
 @keyframes reveal-up {

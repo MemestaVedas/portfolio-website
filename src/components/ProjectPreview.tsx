@@ -16,9 +16,12 @@ interface ProjectPreviewProps {
 export const ProjectPreview = ({ project }: ProjectPreviewProps) => {
     const { transitionTo } = usePageTransition();
 
-    const handleProjectClick = (e: React.MouseEvent) => {
-        e.preventDefault();
-        transitionTo(`/projects/${project.id}`);
+    const [isNavigating, setIsNavigating] = React.useState(false);
+
+    const handleTransition = (path: string) => {
+        if (isNavigating) return;
+        setIsNavigating(true);
+        transitionTo(path);
     };
 
     return (
@@ -70,14 +73,18 @@ export const ProjectPreview = ({ project }: ProjectPreviewProps) => {
                         </div>
 
                         <div className="hidden lg:block">
-                            <a
-                                href={`/projects/${project.id}`}
-                                onClick={handleProjectClick}
-                                className="inline-flex items-center gap-2 text-accent-cyan hover:text-white transition-colors group cursor-pointer"
+                            <button
+                                onClick={() => handleTransition(`/projects/${project.id}`)}
+                                disabled={isNavigating}
+                                className={`inline-flex items-center gap-2 text-accent-cyan hover:text-white transition-colors group ${isNavigating ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
                             >
-                                <span className="font-mono text-sm uppercase tracking-wider">View Deep Dive</span>
-                                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                            </a>
+                                <span className="font-mono text-sm uppercase tracking-wider">
+                                    {isNavigating ? 'Loading...' : 'View Deep Dive'}
+                                </span>
+                                {!isNavigating && (
+                                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                )}
+                            </button>
                         </div>
                     </div>
 
@@ -93,28 +100,40 @@ export const ProjectPreview = ({ project }: ProjectPreviewProps) => {
                         </div>
 
                         {/* Carousel Wrapper */}
-                        <a href={`/projects/${project.id}`} onClick={handleProjectClick} className="w-full relative group cursor-pointer block">
+                        <div
+                            className={`w-full relative group ${isNavigating ? 'cursor-wait' : 'cursor-pointer'}`}
+                            onClick={() => handleTransition(`/projects/${project.id}`)}
+                        >
                             <GalleryCarousel
                                 images={project.mockups}
                                 aspectRatio="video"
                                 className="border-white/10 hover:border-accent-cyan/50 transition-colors"
                             />
                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-[2px] z-20 pointer-events-none">
-                                <span className="px-6 py-3 bg-white text-black font-bold rounded-full transform scale-90 group-hover:scale-100 transition-transform">
-                                    Open Project
+                                <span className="px-6 py-3 bg-white text-black font-bold rounded-full transform scale-90 group-hover:scale-100 transition-transform flex items-center gap-2">
+                                    {isNavigating ? (
+                                        <>
+                                            <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                                            <span>Opening...</span>
+                                        </>
+                                    ) : (
+                                        <span>Open Project</span>
+                                    )}
                                 </span>
                             </div>
-                        </a>
+                        </div>
 
                         <div className="block lg:hidden mt-6">
-                            <a
-                                href={`/projects/${project.id}`}
-                                onClick={handleProjectClick}
-                                className="inline-flex items-center gap-2 text-accent-cyan hover:text-white transition-colors group cursor-pointer"
+                            <button
+                                onClick={() => handleTransition(`/projects/${project.id}`)}
+                                disabled={isNavigating}
+                                className={`inline-flex items-center gap-2 text-accent-cyan hover:text-white transition-colors group ${isNavigating ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
                             >
-                                <span className="font-mono text-sm uppercase tracking-wider">View Deep Dive</span>
-                                <ArrowUpRight className="w-4 h-4" />
-                            </a>
+                                <span className="font-mono text-sm uppercase tracking-wider">
+                                    {isNavigating ? 'Loading...' : 'View Deep Dive'}
+                                </span>
+                                {!isNavigating && <ArrowUpRight className="w-4 h-4" />}
+                            </button>
                         </div>
                     </div>
 

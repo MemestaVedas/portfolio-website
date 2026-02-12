@@ -26,7 +26,7 @@ export const ParallaxSection: React.FC<ParallaxSectionProps> = ({
     className = "",
     id,
     bgLayers = [],
-    enableSnap = true
+    enableSnap = false
 }) => {
     const ref = React.useRef<HTMLDivElement>(null);
 
@@ -39,9 +39,8 @@ export const ParallaxSection: React.FC<ParallaxSectionProps> = ({
         <section
             ref={ref}
             id={id}
-            className={`relative overflow-hidden ${enableSnap ? 'scroll-mt-0' : ''} ${className}`}
+            className={`relative overflow-hidden ${className}`}
             style={{
-                scrollSnapAlign: enableSnap ? 'start' : undefined
             }}
         >
             {/* Background Parallax Layers */}

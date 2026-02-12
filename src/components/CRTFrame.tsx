@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, MotionValue, useMotionTemplate, useTransform } from 'framer-motion';
+import { motion, MotionValue, useMotionTemplate, useTransform, useMotionValue } from 'framer-motion';
 
 interface CRTFrameProps {
     children: React.ReactNode;
@@ -34,6 +34,17 @@ export const CRTFrame: React.FC<CRTFrameProps> = ({
         ? useTransform(frameOpacity as MotionValue<number>, [1, 0.5, 0], [1000, 1500, 2000])
         : 1000;
 
+    // Dynamic shadow opacity to reduce GPU load during expansion
+    const scaleValue = typeof scale === 'number' ? useMotionValue(scale) : (scale as MotionValue<number>);
+    const shadowOpacity = useTransform(scaleValue, [1, 5], [0.5, 0]);
+
+    const shadow = useMotionTemplate`
+        0 40px 80px rgba(0,0,0,${shadowOpacity}),
+        0 20px 40px rgba(0,0,0,${useTransform(shadowOpacity, o => o * 0.8)}),
+        inset 0 2px 0 rgba(255,255,255,0.08),
+        inset 0 -2px 0 rgba(0,0,0,${useTransform(shadowOpacity, o => o * 0.6)})
+    `;
+
     return (
         <motion.div
             className={`relative w-full max-w-5xl mx-6 md:mx-8 ${className}`}
@@ -52,12 +63,8 @@ export const CRTFrame: React.FC<CRTFrameProps> = ({
                     borderRadius: typeof borderRadius === 'number' ? `${borderRadius}px` : borderRadius,
                     background: 'linear-gradient(145deg, #2a2a45 0%, #1a1a2e 50%, #0d0d1a 100%)',
                     opacity: frameOpacity,
-                    boxShadow: `
-                        0 40px 80px rgba(0,0,0,0.5),
-                        0 20px 40px rgba(0,0,0,0.4),
-                        inset 0 2px 0 rgba(255,255,255,0.08),
-                        inset 0 -2px 0 rgba(0,0,0,0.3)
-                    `,
+                    boxShadow: shadow,
+                    willChange: 'transform, border-radius, box-shadow'
                 }}
             >
                 {/* CRT bezel highlight (top edge reflection) */}

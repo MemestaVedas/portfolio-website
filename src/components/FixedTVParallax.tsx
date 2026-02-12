@@ -55,44 +55,40 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
 
     const contentY = useTransform(
         scrollYProgress,
-        // Quote In → Quote Display → Stats In → Stats Display → Text In → Text Display
-        [0.15,  0.23,  0.35,  0.45,  0.57,  0.70],
-        ['70%', '33%', '0%',   '0%',  '-33%', '-70%']
+        //  Quote In | Quote Ctr | Hero In | Hero HOLD | Text In | Text Out
+        [0.15, 0.30, 0.40, 0.75, 0.85, 0.95],
+        ['70%', '35%', '0%', '0%', '-35%', '-70%']
     );
 
-    // --- PHASE 3: EXPANSION & EXIT (0.70 - 1.0) ---
-    // 1. All content fades together (0.70-0.78)
-    // 2. Black screen buffer (0.78-0.82)
-    // 3. Frame expands physically until it's completely off-screen (0.82-0.98)
-    // 4. Frame removed only when fully off-screen (0.98-1.0)
-    // 5. Background fades last to reveal projects
+    // --- PHASE 3: ORGANIC MORPH / EXPANSION (0.95 - 1.0) ---
+    // TV morphs organically to fill viewport with elastic easing
 
-    // Step 1: All internal content fades and lifts together before expansion (earlier)
-    const internalContentOpacity = useTransform(scrollYProgress, [0.65, 0.73], [1, 0]);
-    const internalContentY = useTransform(scrollYProgress, [0.65, 0.75], ['0%', '-15%']);
+    // Calculate target scale dynamically (viewport / TV frame)
+    const tvScaleRaw = useTransform(scrollYProgress, [0.95, 1.0], [1, 25]);
 
-    // Step 2: TV scale — expands until frame edges are completely off-screen
-    //   Scale to 5.5x to ensure all edges (including rounded corners) are pushed out of viewport
-    //   Exponential spacing: slow start, accelerates smoothly
-    const tvScaleRaw = useTransform(
-        scrollYProgress,
-        [0.77, 0.80, 0.83, 0.86, 0.89, 0.91, 0.93, 1.0],
-        [1.0,  1.2,  1.6,  2.2,  3.0,  4.0,  5.0,  5.5]
-    );
-    // Spring wrapper: physically smooth interpolation prevents frame-skipping
-    const tvScale = useSpring(tvScaleRaw, { stiffness: 120, damping: 28 });
+    // Apply spring physics to the scale for organic bouncy feel
+    const tvScale = useSpring(tvScaleRaw, {
+        stiffness: 60,
+        damping: 25,
+        mass: 1.2
+    });
 
-    // Step 3: Border radius eases to 0 during first half of expansion
-    const tvBorderRadius = useTransform(scrollYProgress, [0.82, 0.91], [64, 0]);
+    // Border radius morphs from rounded to sharp
+    const tvBorderRadius = useTransform(scrollYProgress, [0.95, 0.99], [64, 0]);
 
-    // Step 4: Frame chrome stays VISIBLE during expansion, only removed when fully off-screen
-    const frameOpacity = useTransform(scrollYProgress, [0.98, 1.0], [1, 0]);
+    // Frame opacity - becomes transparent to reveal content behind
+    const frameOpacity = useTransform(scrollYProgress, [0.98, 0.995], [1, 0]);
 
-    // Step 5: Screen background stays visible during expansion
-    const screenOpacity = useTransform(scrollYProgress, [0.98, 1.0], [1, 0]);
+    // Screen content opacity - fades out the CRT content
+    const screenOpacity = useTransform(scrollYProgress, [0.95, 0.99], [1, 0]);
 
-    // Step 6: Background color fades last to reveal projects underneath
-    const bgOpacity = useTransform(scrollYProgress, [0.92, 1.0], [1, 0]);
+    // Internal content - "scrolling reel" effect: slides up and out
+    const internalContentY = useTransform(scrollYProgress, [0.95, 1.0], ['0%', '-100%']);
+    const internalContentOpacity = useTransform(scrollYProgress, [0.96, 0.99], [1, 0]);
+    const internalContentBlur = useTransform(scrollYProgress, [0.96, 0.99], [0, 12]);
+
+    // Background Opacity - Fades out to reveal content behind
+    const bgOpacity = useTransform(scrollYProgress, [0.95, 0.99], [1, 0]);
 
     // Background elements fade out earlier
     const backgroundY = useTransform(scrollYProgress, [0.05, 0.3], ['0vh', '-100vh']);
@@ -103,8 +99,7 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
         <div
             ref={containerRef}
             className="relative"
-            // further increased height so project entries appear much lower after the TV morph
-            style={{ height: '1400vh' }}
+            style={{ height: '400vh' }}
         >
             {/* Sticky Container - Center of Viewport */}
             <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">

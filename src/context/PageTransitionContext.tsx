@@ -27,7 +27,7 @@ export const PageTransitionProvider = ({ children }: { children: React.ReactNode
             // Allow time for opening animation before resetting to idle
             const timer = setTimeout(() => {
                 setPhase('idle');
-            }, 1000); // Duration of opening animation
+            }, 1200); // Duration of opening animation
             return () => clearTimeout(timer);
         } else if (phase === 'idle' && hasOnboarded) {
             // Browser back/forward detected!
@@ -35,7 +35,7 @@ export const PageTransitionProvider = ({ children }: { children: React.ReactNode
             setPhase('opening');
             const timer = setTimeout(() => {
                 setPhase('idle');
-            }, 1000);
+            }, 1200);
             return () => clearTimeout(timer);
         }
     }, [pathname]);
@@ -48,7 +48,7 @@ export const PageTransitionProvider = ({ children }: { children: React.ReactNode
         // Wait for closing animation to finish before pushing new route
         setTimeout(() => {
             router.push(href);
-        }, 800); // Duration of closing animation
+        }, 1000); // Duration of closing animation
     };
 
     return (
