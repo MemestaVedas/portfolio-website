@@ -33,89 +33,78 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
         offset: ["start start", "end end"]
     });
 
-    // --- PHASE 1: INTRO (0 - 0.25) ---
+    // --- PHASE 1: INTRO (0 - 0.15) ---
     // Text separation and TV entry
 
-    // "My name is" - Move UP
-    const introTextY = useTransform(scrollYProgress, [0, 0.15], ['0%', '-100%']);
-    const introTextOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+    // "My name is" - Move UP and dissolve (faster)
+    const introTextY = useTransform(scrollYProgress, [0, 0.09], ['0%', '-100%']);
+    const introTextOpacity = useTransform(scrollYProgress, [0, 0.06], [1, 0]);
 
-    // "KUSHAL..." - Move DOWN (behind everything)
-    const nameTextY = useTransform(scrollYProgress, [0, 0.2], ['0%', '20%']);
-    const nameTextOpacity = useTransform(scrollYProgress, [0.08, 0.2], [1, 0]);
-    const nameTextScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
+    // "KUSHAL..." - Move DOWN (behind everything) (faster)
+    const nameTextY = useTransform(scrollYProgress, [0, 0.15], ['0%', '20%']);
+    const nameTextOpacity = useTransform(scrollYProgress, [0.03, 0.11], [1, 0]);
+    const nameTextScale = useTransform(scrollYProgress, [0, 0.10], [1, 0.92]);
 
-    // TV Frame - Move UP to center
-    const tvTranslateY = useTransform(scrollYProgress, [0, 0.2], ['50vh', '0vh']);
+    // TV Frame - Move UP to center. Locks in place sooner (0.10).
+    const tvTranslateY = useTransform(scrollYProgress, [0, 0.10], ['50vh', '0vh']);
 
-    // --- PHASE 2: CONTENT SCROLL (0.25 - 0.90) ---
-    // Content slides inside the TV while TV is pinned
-    // Flow: Quote → Mission Control → Morph Intro Text → [MORPH]
-    // Adjusted to give MUCH MORE TIME for control panel and text to shine
+    // --- PHASE 2: CONTENT SCROLL (0.15 - 0.70) ---
+    // Content slides inside the TV while TV is pinned. 
+    // Three equal sections scroll through: Quote → Stats → Project Intro
+    // Each gets ~18% of scroll progress for equal viewing time
 
     const contentY = useTransform(
         scrollYProgress,
-        //  Quote In | Quote Ctr | Hero In | Hero HOLD | Text In | Text Out
-        [0.2, 0.35, 0.45, 0.70, 0.80, 0.90],
-        ['70%', '35%', '0%', '0%', '-35%', '-70%']
+        // Quote In → Quote Display → Stats In → Stats Display → Text In → Text Display
+        [0.15,  0.23,  0.35,  0.45,  0.57,  0.70],
+        ['70%', '33%', '0%',   '0%',  '-33%', '-70%']
     );
 
-    // --- PHASE 3: ORGANIC MORPH / EXPANSION (0.90 - 1.0) ---
-    // TV morphs organically to fill viewport with elastic easing
-    // Starts later now to allow content to shine
+    // --- PHASE 3: EXPANSION & EXIT (0.70 - 1.0) ---
+    // 1. All content fades together (0.70-0.78)
+    // 2. Black screen buffer (0.78-0.82)
+    // 3. Frame expands physically until it's completely off-screen (0.82-0.98)
+    // 4. Frame removed only when fully off-screen (0.98-1.0)
+    // 5. Background fades last to reveal projects
 
-    // Organic cubic-bezier easing curve for fluid, elastic feel
-    const organicEase = [0.22, 1, 0.36, 1] as const;
+    // Step 1: All internal content fades and lifts together before expansion (earlier)
+    const internalContentOpacity = useTransform(scrollYProgress, [0.65, 0.73], [1, 0]);
+    const internalContentY = useTransform(scrollYProgress, [0.65, 0.75], ['0%', '-15%']);
 
-    // Calculate target scale dynamically (viewport / TV frame)
-    // SLOWER: Extended range from 0.90 to 1.0
-    const tvScaleRaw = useTransform(scrollYProgress, [0.90, 1.0], [1, 25]);
-
-    // Apply spring physics to the scale for organic bouncy feel
-    const tvScale = useSpring(tvScaleRaw, {
-        stiffness: 60,
-        damping: 25,
-        mass: 1.2
-    });
-
-    // Border radius morphs from rounded to sharp - SLOWER match
-    const tvBorderRadius = useTransform(
+    // Step 2: TV scale — expands until frame edges are completely off-screen
+    //   Scale to 5.5x to ensure all edges (including rounded corners) are pushed out of viewport
+    //   Exponential spacing: slow start, accelerates smoothly
+    const tvScaleRaw = useTransform(
         scrollYProgress,
-        [0.90, 0.95, 1.0],
-        [64, 32, 0] // 4rem -> 2rem -> 0
+        [0.77, 0.80, 0.83, 0.86, 0.89, 0.91, 0.93, 1.0],
+        [1.0,  1.2,  1.6,  2.2,  3.0,  4.0,  5.0,  5.5]
     );
+    // Spring wrapper: physically smooth interpolation prevents frame-skipping
+    const tvScale = useSpring(tvScaleRaw, { stiffness: 120, damping: 28 });
 
-    // Frame opacity - becomes transparent to reveal content behind
-    const frameOpacity = useTransform(scrollYProgress, [0.92, 0.98], [1, 0]);
+    // Step 3: Border radius eases to 0 during first half of expansion
+    const tvBorderRadius = useTransform(scrollYProgress, [0.82, 0.91], [64, 0]);
 
-    // Screen content opacity - fades out the CRT content
-    const screenOpacity = useTransform(scrollYProgress, [0.92, 0.98], [1, 0]);
+    // Step 4: Frame chrome stays VISIBLE during expansion, only removed when fully off-screen
+    const frameOpacity = useTransform(scrollYProgress, [0.98, 1.0], [1, 0]);
 
-    // Internal content - "scrolling reel" effect
-    // Content inside TV slides UP and OUT as if scrolling off screen
-    // Starts at 0.90 now
-    const internalContentY = useTransform(
-        scrollYProgress,
-        [0.90, 1.0],
-        ['0%', '-100%'] // Slides up and completely out
-    );
-    const internalContentOpacity = useTransform(scrollYProgress, [0.90, 0.96], [1, 0]);
-    const internalContentBlur = useTransform(scrollYProgress, [0.90, 0.96], [0, 12]); // More blur
+    // Step 5: Screen background stays visible during expansion
+    const screenOpacity = useTransform(scrollYProgress, [0.98, 1.0], [1, 0]);
 
-    // Background Opacity - Fades out to reveal content behind
-    const bgOpacity = useTransform(scrollYProgress, [0.90, 0.98], [1, 0]);
+    // Step 6: Background color fades last to reveal projects underneath
+    const bgOpacity = useTransform(scrollYProgress, [0.92, 1.0], [1, 0]);
 
-    // Background layers - Full scroll exit
-    const backgroundY = useTransform(scrollYProgress, [0.05, 0.4], ['0vh', '-100vh']);
-    const decorativeY = useTransform(scrollYProgress, [0.05, 0.45], ['0vh', '-120vh']);
-    // Fade out decorative elements and blue background as they finish scrolling
-    const decorativeOpacity = useTransform(scrollYProgress, [0.35, 0.45], [1, 0]);
+    // Background elements fade out earlier
+    const backgroundY = useTransform(scrollYProgress, [0.05, 0.3], ['0vh', '-100vh']);
+    const decorativeY = useTransform(scrollYProgress, [0.05, 0.35], ['0vh', '-120vh']);
+    const decorativeOpacity = useTransform(scrollYProgress, [0.2, 0.4], [1, 0]);
 
     return (
         <div
             ref={containerRef}
             className="relative"
-            style={{ height: '550vh' }}
+            // further increased height so project entries appear much lower after the TV morph
+            style={{ height: '1400vh' }}
         >
             {/* Sticky Container - Center of Viewport */}
             <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">
@@ -190,10 +179,8 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
                             style={{
                                 y: contentY,
                                 opacity: internalContentOpacity,
-                                // Add the scrolling reel effect during morph
                                 translateY: internalContentY,
-                                filter: useTransform(internalContentBlur, (blur) => `blur(${blur}px)`),
-                                willChange: 'transform, opacity, filter'
+                                willChange: 'transform, opacity'
                             }}
                         >
                             {/* Quote Section */}
@@ -201,7 +188,7 @@ export const FixedTVParallax: React.FC<FixedTVParallaxProps> = ({
                                 {quoteContent}
                             </div>
 
-                            {/* Hero content - Mission Control */}
+                            {/* Hero content - Mission Control (stats) */}
                             <div className="h-[500px] md:h-[650px] w-full flex items-stretch justify-center flex-shrink-0">
                                 {heroContent}
                             </div>

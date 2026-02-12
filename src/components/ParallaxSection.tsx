@@ -3,6 +3,8 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
+import { EASE_OUT, DURATION_SLOW } from '@/lib/animation';
+
 interface ParallaxSectionProps {
     children: React.ReactNode;
     className?: string;
@@ -122,9 +124,9 @@ export const ScrollReveal: React.FC<{
             whileInView={{ opacity: 1, y: 0, x: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{
-                duration: 0.8,
+                duration: DURATION_SLOW,
                 delay,
-                ease: [0.23, 1, 0.32, 1]
+                ease: EASE_OUT
             }}
         >
             {children}

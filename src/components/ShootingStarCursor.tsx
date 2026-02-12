@@ -1,34 +1,62 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { motion, useSpring } from 'framer-motion';
+import { prefersReducedMotion } from '@/lib/animation';
 
 export const ShootingStarCursor = () => {
-    // Spring physics for smooth movement
-    const cursorX = useSpring(-100, { damping: 20, stiffness: 300, mass: 0.1 });
-    const cursorY = useSpring(-100, { damping: 20, stiffness: 300, mass: 0.1 });
+    const cursorX = useSpring(-100, { damping: 25, stiffness: 300, mass: 0.1 });
+    const cursorY = useSpring(-100, { damping: 25, stiffness: 300, mass: 0.1 });
 
     const [isPointer, setIsPointer] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const isPointerRef = useRef(false);
 
     useEffect(() => {
+        // Respect reduced motion preference first
+        if (prefersReducedMotion()) {
+            setIsVisible(false);
+            return;
+        }
+
+        // Show cursor when a real mouse is used. Touch-only devices won't fire 'mousemove'.
         const moveCursor = (e: MouseEvent) => {
+            // Show on first mouse movement
+            if (!isVisible) setIsVisible(true);
+
             cursorX.set(e.clientX);
             cursorY.set(e.clientY);
 
-            // Optimized Pointer Check
             const target = e.target as HTMLElement;
-            setIsPointer(
+            const pointer =
                 target.tagName === 'A' ||
                 target.tagName === 'BUTTON' ||
                 target.getAttribute('role') === 'button' ||
                 target.closest('a') !== null ||
-                target.closest('button') !== null
-            );
+                target.closest('button') !== null;
+
+            // Only trigger re-render when pointer state actually changes
+            if (pointer !== isPointerRef.current) {
+                isPointerRef.current = pointer;
+                setIsPointer(pointer);
+            }
         };
 
-        window.addEventListener('mousemove', moveCursor);
-        return () => window.removeEventListener('mousemove', moveCursor);
+        const touchStart = () => {
+            // On touch interaction prefer native touch behavior (hide custom cursor)
+            setIsVisible(false);
+        };
+
+        window.addEventListener('mousemove', moveCursor, { passive: true });
+        window.addEventListener('touchstart', touchStart, { passive: true });
+
+        return () => {
+            window.removeEventListener('mousemove', moveCursor);
+            window.removeEventListener('touchstart', touchStart);
+        };
     }, [cursorX, cursorY]);
+
+    if (!isVisible) return null;
 
     return (
         <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">

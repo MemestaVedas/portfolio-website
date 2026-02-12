@@ -111,7 +111,7 @@ const crtContentVariants = {
     visible: {
         y: 0,
         opacity: 1,
-        filter: "blur(0px)",
+        scale: 1,
         transition: {
             duration: 0.5,
             ease: ORGANIC_EASE,
@@ -120,7 +120,7 @@ const crtContentVariants = {
     exiting: {
         y: "-100%",
         opacity: 0,
-        filter: "blur(8px)",
+        scale: 0.95,
         transition: {
             duration: 0.8,
             ease: ORGANIC_EASE,
@@ -135,12 +135,12 @@ const websiteContentVariants = {
     hidden: {
         y: "100%",
         opacity: 0,
-        filter: "blur(12px)",
+        scale: 0.95,
     },
     entering: {
         y: 0,
         opacity: 1,
-        filter: "blur(0px)",
+        scale: 1,
         transition: {
             duration: 1,
             ease: ORGANIC_EASE,
@@ -150,10 +150,10 @@ const websiteContentVariants = {
     visible: {
         y: 0,
         opacity: 1,
-        filter: "blur(0px)",
+        scale: 1,
         transition: {
             duration: 0.3,
-            ease: [0.0, 0.0, 0.58, 1.0] as const, // easeOut curve
+            ease: ORGANIC_EASE,
         },
     },
 };
@@ -168,8 +168,9 @@ interface ScanlineOverlayProps {
 }
 
 const ScanlineOverlay: React.FC<ScanlineOverlayProps> = ({ opacity = 0.03, scale }) => {
-    // Calculate inverse scale for background-size to maintain consistent scanline density
-    const inverseScale = useTransform(scale ?? useMotionValue(1), (s) => 4 / s);
+    const defaultScale = useMotionValue(1);
+    const activeScale = scale ?? defaultScale;
+    const inverseScale = useTransform(activeScale, (s) => 4 / s);
     const backgroundSize = useTransform(inverseScale, (inv) => `100% ${inv}px`);
 
     return (

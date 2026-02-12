@@ -1,6 +1,7 @@
 "use client";
 
 import { Variants } from 'framer-motion';
+import { EASE_OUT, DURATION_NORMAL, DURATION_SLOW, STAGGER_NORMAL } from '@/lib/animation';
 
 interface StaggerOptions {
     staggerChildren?: number;
@@ -16,12 +17,12 @@ interface StaggerOptions {
  * Returns animation variants for container and children elements
  */
 export function useStaggeredReveal({
-    staggerChildren = 0.08,
+    staggerChildren = STAGGER_NORMAL,
     delayChildren = 0,
     direction = 'up',
     distance = 30,
-    duration = 0.6,
-    ease = [0.23, 1, 0.32, 1] // Custom easeOutExpo
+    duration = DURATION_NORMAL,
+    ease = EASE_OUT as number[]
 }: StaggerOptions = {}) {
 
     // Calculate initial position based on direction
@@ -61,7 +62,7 @@ export function useStaggeredReveal({
             scale: 1,
             transition: {
                 duration,
-                ease: [0.23, 1, 0.32, 1] as const
+                ease: EASE_OUT
             }
         }
     };
@@ -103,7 +104,7 @@ export function useTextReveal({
             rotateX: 0,
             transition: {
                 duration,
-                ease: [0.23, 1, 0.32, 1]
+                ease: EASE_OUT
             }
         }
     };
@@ -112,15 +113,13 @@ export function useTextReveal({
         hidden: {
             opacity: 0,
             y: 20,
-            filter: 'blur(8px)'
         },
         visible: {
             opacity: 1,
             y: 0,
-            filter: 'blur(0px)',
             transition: {
                 duration: duration * 1.5,
-                ease: [0.23, 1, 0.32, 1]
+                ease: EASE_OUT
             }
         }
     };
@@ -150,7 +149,7 @@ export function useSectionReveal({
             scale: 1,
             transition: {
                 duration,
-                ease: [0.23, 1, 0.32, 1]
+                ease: EASE_OUT
             }
         }
     };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, MotionValue, useMotionTemplate } from 'framer-motion';
+import { motion, MotionValue, useMotionTemplate, useTransform } from 'framer-motion';
 
 interface CRTFrameProps {
     children: React.ReactNode;
@@ -25,14 +25,22 @@ export const CRTFrame: React.FC<CRTFrameProps> = ({
     // Dynamic background with motion template for performance
     const background = useMotionTemplate`linear-gradient(135deg, rgba(10,10,10,${screenOpacity}) 0%, rgba(0,0,0,${screenOpacity}) 50%, rgba(10,10,10,${screenOpacity}) 100%)`;
 
+    // Derive morph state: disable expensive effects when frame is fading
+    const isMorphing = typeof frameOpacity !== 'number';
+    const bulgeRotateX = isMorphing
+        ? useTransform(frameOpacity as MotionValue<number>, [1, 0.5, 0], [2, 0.5, 0])
+        : 2;
+    const perspectiveValue = isMorphing
+        ? useTransform(frameOpacity as MotionValue<number>, [1, 0.5, 0], [1000, 1500, 2000])
+        : 1000;
+
     return (
         <motion.div
             className={`relative w-full max-w-5xl mx-6 md:mx-8 ${className}`}
-            initial={{ opacity: 0, scale: 0.9, rotateX: 5 }}
-            animate={{ opacity: 1, rotateX: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
             style={{
-                perspective: '1500px',
                 scale: scale,
                 willChange: 'transform'
             }}
@@ -83,8 +91,9 @@ export const CRTFrame: React.FC<CRTFrameProps> = ({
                             inset 0 -20px 60px rgba(0,0,0,0.5),
                             0 4px 0 rgba(0,0,0,0.3)
                         `,
-                        /* CRT bulge illusion */
-                        transform: 'perspective(1000px) rotateX(2deg)',
+                        transformOrigin: 'center center',
+                        perspective: perspectiveValue,
+                        rotateX: bulgeRotateX,
                     }}
                 >
                     {/* Screen glass reflection overlay - lighter */}

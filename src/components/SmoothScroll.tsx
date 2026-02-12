@@ -2,16 +2,18 @@
 
 import { useEffect, useRef } from 'react';
 import Lenis from 'lenis';
+import { prefersReducedMotion } from '@/lib/animation';
 
 export const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
     const lenisRef = useRef<Lenis | null>(null);
 
     useEffect(() => {
-        // Initialize Lenis with smooth, Apple-like easing
+        if (prefersReducedMotion()) return;
+
         const lenis = new Lenis({
             lerp: 0.1,
             duration: 0.8,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential Out
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             orientation: 'vertical',
             gestureOrientation: 'vertical',
             smoothWheel: true,
@@ -20,15 +22,17 @@ export const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
         });
 
         lenisRef.current = lenis;
+        let rafId: number;
 
         function raf(time: number) {
             lenis.raf(time);
-            requestAnimationFrame(raf);
+            rafId = requestAnimationFrame(raf);
         }
 
-        requestAnimationFrame(raf);
+        rafId = requestAnimationFrame(raf);
 
         return () => {
+            cancelAnimationFrame(rafId);
             lenis.destroy();
         };
     }, []);

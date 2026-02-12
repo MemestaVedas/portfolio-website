@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
@@ -16,6 +15,12 @@ interface ProjectPreviewProps {
 
 export const ProjectPreview = ({ project }: ProjectPreviewProps) => {
     const { transitionTo } = usePageTransition();
+
+    const handleProjectClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        transitionTo(`/projects/${project.id}`);
+    };
+
     return (
         <section className="py-24 border-b border-white/5" id={project.id}>
             <div className="container mx-auto px-6 max-w-7xl">
@@ -65,13 +70,14 @@ export const ProjectPreview = ({ project }: ProjectPreviewProps) => {
                         </div>
 
                         <div className="hidden lg:block">
-                            <button
-                                onClick={() => transitionTo(`/projects/${project.id}`)}
+                            <a
+                                href={`/projects/${project.id}`}
+                                onClick={handleProjectClick}
                                 className="inline-flex items-center gap-2 text-accent-cyan hover:text-white transition-colors group cursor-pointer"
                             >
                                 <span className="font-mono text-sm uppercase tracking-wider">View Deep Dive</span>
                                 <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -87,7 +93,7 @@ export const ProjectPreview = ({ project }: ProjectPreviewProps) => {
                         </div>
 
                         {/* Carousel Wrapper */}
-                        <div className="w-full relative group cursor-pointer" onClick={() => transitionTo(`/projects/${project.id}`)}>
+                        <a href={`/projects/${project.id}`} onClick={handleProjectClick} className="w-full relative group cursor-pointer block">
                             <GalleryCarousel
                                 images={project.mockups}
                                 aspectRatio="video"
@@ -98,16 +104,17 @@ export const ProjectPreview = ({ project }: ProjectPreviewProps) => {
                                     Open Project
                                 </span>
                             </div>
-                        </div>
+                        </a>
 
                         <div className="block lg:hidden mt-6">
-                            <button
-                                onClick={() => transitionTo(`/projects/${project.id}`)}
+                            <a
+                                href={`/projects/${project.id}`}
+                                onClick={handleProjectClick}
                                 className="inline-flex items-center gap-2 text-accent-cyan hover:text-white transition-colors group cursor-pointer"
                             >
                                 <span className="font-mono text-sm uppercase tracking-wider">View Deep Dive</span>
                                 <ArrowUpRight className="w-4 h-4" />
-                            </button>
+                            </a>
                         </div>
                     </div>
 

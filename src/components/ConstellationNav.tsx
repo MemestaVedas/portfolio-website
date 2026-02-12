@@ -41,35 +41,42 @@ const ConstellationNav = () => {
     }, []);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // Detect active section based on scroll position
+    // Detect active section based on scroll position (throttled with RAF)
     useEffect(() => {
+        let ticking = false;
+
         const handleScroll = () => {
-            // Visibility check: Show only after scrolling past 75% of viewport (TV pin point)
-            setIsVisible(window.scrollY > window.innerHeight * 0.75);
+            if (ticking) return;
+            ticking = true;
 
-            const sections = ['home', 'about', 'projects', 'skills', 'meta', 'contact'];
-            const scrollPosition = window.scrollY + window.innerHeight * 0.4;
+            requestAnimationFrame(() => {
+                setIsVisible(window.scrollY > window.innerHeight * 0.75);
 
-            for (const section of [...sections].reverse()) {
-                const element = section === 'skills'
-                    ? document.querySelector('#architecture')
-                    : section === 'contact'
-                        ? document.querySelector('#contact')
-                        : document.getElementById(section);
+                const sections = ['home', 'about', 'projects', 'skills', 'meta', 'contact'];
+                const scrollPosition = window.scrollY + window.innerHeight * 0.4;
 
-                if (element) {
-                    const rect = element.getBoundingClientRect();
-                    const elementTop = rect.top + window.scrollY;
+                for (const section of [...sections].reverse()) {
+                    const element = section === 'skills'
+                        ? document.querySelector('#architecture')
+                        : section === 'contact'
+                            ? document.querySelector('#contact')
+                            : document.getElementById(section);
 
-                    if (scrollPosition >= elementTop) {
-                        setActiveSection(section);
-                        break;
+                    if (element) {
+                        const rect = element.getBoundingClientRect();
+                        const elementTop = rect.top + window.scrollY;
+
+                        if (scrollPosition >= elementTop) {
+                            setActiveSection(section);
+                            break;
+                        }
                     }
                 }
-            }
+                ticking = false;
+            });
         };
 
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);

@@ -16,7 +16,8 @@ const Navigation = () => {
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
-        // Detect low power mode & mobile
+        let ticking = false;
+
         const checkConstraints = () => {
             const lowPower =
                 window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
@@ -28,11 +29,15 @@ const Navigation = () => {
         checkConstraints();
         window.addEventListener('resize', checkConstraints);
 
-        // Track scroll for background opacity
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(() => {
+                setIsScrolled(window.scrollY > 50);
+                ticking = false;
+            });
         };
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', checkConstraints);
